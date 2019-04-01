@@ -17,8 +17,18 @@ class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionL
         val userRegButton = findViewById<View>(R.id.activity_main_button_user_reg)
         val addService = findViewById<View>(R.id.activity_main_button_add_service)
         val serviceList = findViewById<View>(R.id.activity_main_button_services_list)
+        val userList = findViewById<View>(R.id.activity_main_button_user_list)
 
         userRegButton.setOnClickListener {
+            var fragment = UserRegFragment()
+            var fTransaction = supportFragmentManager.beginTransaction()
+            fTransaction.add(R.id.activity_main, fragment)
+            fTransaction.commit()
+
+
+        }
+
+        userList.setOnClickListener {
             var fragment = UserRegFragment()
             var fTransaction = supportFragmentManager.beginTransaction()
             fTransaction.add(R.id.activity_main, fragment)

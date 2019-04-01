@@ -52,15 +52,34 @@ class UserRegFragment : Fragment() {
     }
 
     private fun addUser() {
-        if (password.text.toString().equals(passwordRepeat.text.toString())) {
-            val passMd5 = Hex.encodeHex(DigestUtils.md5("vicomlite" + password.text.toString())).toString()
+        if (login.text.isEmpty()) {
             Toast.makeText(
                 App.instance()?.baseContext,
-                "MD5 ${passMd5}",
+                "Не заполнен логин",
                 Toast.LENGTH_LONG
             ).show()
-            //DigestUtils.md5Hex("vicomlite" + password.text.toString())
-            //App.instance()?.dataControl?.addUser(login.text.toString(), passMd5)
+            return
+        }
+        if (password.text.isEmpty()) {
+            Toast.makeText(
+                App.instance()?.baseContext,
+                "Не заполнен пароль",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        if (passwordRepeat.text.isEmpty()) {
+            Toast.makeText(
+                App.instance()?.baseContext,
+                "Повторите пароль",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        if (password.text.toString().equals(passwordRepeat.text.toString())) {
+            val passMd5 = Hex.encodeHex(DigestUtils.md5("vicomlite" + password.text.toString())).joinToString("")
+            App.instance()?.dataControl?.addUser(login.text.toString(), passMd5)
         } else {
             Toast.makeText(
                 App.instance()?.baseContext,

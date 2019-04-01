@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import android.widget.Toast
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Registration
@@ -62,11 +61,16 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             val values = ContentValues()
             values.put(ID, id)
             values.put(USER, user)
+            values.put(PASSWORD, password)
             App.instance()?.database?.insert(USERS_TABLE_NAME, null, values)
             Toast.makeText(App.instance()?.baseContext, "Сохранен пользователь - $user", Toast.LENGTH_LONG).show()
             id
         } else {
-            Log.d("DDLog", "Пользователь $user уже есть в базе")
+            Toast.makeText(
+                App.instance()?.baseContext,
+                "Пользователь $user уже есть в базе. Выберите другое имя пользователя",
+                Toast.LENGTH_LONG
+            ).show()
             null
         }
     }
