@@ -116,4 +116,19 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         ).show()
     }
 
+    fun addPay(user: String, price: Double) {
+        val values = ContentValues()
+        val id = UUID.randomUUID().toString()
+        values.put(ID, id)
+        values.put(USER, findUserId(user))
+        values.put(DATE, Date().toString())
+        values.put(PRICE, price)
+        App.instance()?.database?.insert(PAY_TABLE_NAME, null, values)
+        Toast.makeText(
+            App.instance()?.baseContext,
+            "Выдача денежных средств сотруднику $user в размере $price руб. зафиксирована успешно",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
 }
