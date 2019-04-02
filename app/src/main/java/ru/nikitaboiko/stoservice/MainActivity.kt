@@ -4,9 +4,10 @@ import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.fragments.UserList
+import ru.nikitaboiko.stoservice.fragments.UserListDialog
+import ru.nikitaboiko.stoservice.fragments.UserRegDialog
 import ru.nikitaboiko.stoservice.fragments.UserRegFragment
 
 class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionListener,
@@ -29,21 +30,31 @@ class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionL
         val serviceList = findViewById<View>(R.id.activity_main_button_services_list)
         val userList = findViewById<View>(R.id.activity_main_button_user_list)
 
-        /* userRegButton.setOnClickListener {
-             var fragment = UserRegFragment()
-             var fTransaction = supportFragmentManager.beginTransaction()
-             fTransaction.add(R.id.activity_main, fragment)
-             fTransaction.commit()
+        userRegButton.setOnClickListener {
+            val manager = supportFragmentManager
+            val myDialogFragment = UserRegDialog()
+            myDialogFragment.show(manager, "dialog")
+
+            /*var fragment = UserRegFragment()
+            var fTransaction = supportFragmentManager.beginTransaction()
+            fTransaction.add(R.id.activity_main, fragment)
+            fTransaction.commit()*/
 
 
-         }*/
+        }
 
         userList.setOnClickListener {
-            var fTransaction = supportFragmentManager.beginTransaction()
+
+            val manager = supportFragmentManager
+            val myDialogFragment = UserListDialog()
+            myDialogFragment.show(manager, "dialog")
+
+            /*var fTransaction = supportFragmentManager.beginTransaction()
             fTransaction.add(R.id.activity_main, fragment)
             fTransaction.commit()
             var lm = RelativeLayout.LayoutParams(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
-            fragment.view?.layoutParams = lm
+            fragment.view?.layoutParams = lm*/
+
             //fragment.view.layoutParams = lm
 
 

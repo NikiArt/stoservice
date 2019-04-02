@@ -1,7 +1,9 @@
 package ru.nikitaboiko.stoservice.fragments
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikitaboiko.stoservice.App
@@ -13,14 +15,14 @@ class UserListDialog : DialogFragment() {
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
         val adb = AlertDialog.Builder(cont)
         adb.setTitle("Выберите пользователя")
-        // adb.setItems(users, DialogInterface.OnClickListener())
-        /*    setItems(users, DialogInterface.OnClickListener()
-        {
-            fun onClick(dialog: DialogInterface, which: int) {
-                Toast.makeText(getActivity(),
-                    "Выбранный кот: ",
-                    Toast.LENGTH_SHORT).show();
-            })*/
+            .setItems(users, DialogInterface.OnClickListener { dialog, which ->
+                Toast.makeText(
+                    getActivity(),
+                    "Выбранный кот: " + users[which],
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            })
         return adb.create()
     }
 
