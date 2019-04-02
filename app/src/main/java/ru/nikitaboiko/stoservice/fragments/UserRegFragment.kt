@@ -54,7 +54,7 @@ class UserRegFragment : Fragment() {
     private fun addUser() {
         if (login.text.isEmpty()) {
             Toast.makeText(
-                App.instance()?.baseContext,
+                App.instance().baseContext,
                 "Не заполнен логин",
                 Toast.LENGTH_LONG
             ).show()
@@ -62,7 +62,7 @@ class UserRegFragment : Fragment() {
         }
         if (password.text.isEmpty()) {
             Toast.makeText(
-                App.instance()?.baseContext,
+                App.instance().baseContext,
                 "Не заполнен пароль",
                 Toast.LENGTH_LONG
             ).show()
@@ -70,7 +70,7 @@ class UserRegFragment : Fragment() {
         }
         if (passwordRepeat.text.isEmpty()) {
             Toast.makeText(
-                App.instance()?.baseContext,
+                App.instance().baseContext,
                 "Повторите пароль",
                 Toast.LENGTH_LONG
             ).show()
@@ -79,10 +79,10 @@ class UserRegFragment : Fragment() {
 
         if (password.text.toString().equals(passwordRepeat.text.toString())) {
             val passMd5 = Hex.encodeHex(DigestUtils.md5("vicomlite" + password.text.toString())).joinToString("")
-            App.instance()?.dataControl?.addUser(login.text.toString(), passMd5)
+            App.instance().dataControl.addUser(login.text.toString(), passMd5)
         } else {
             Toast.makeText(
-                App.instance()?.baseContext,
+                App.instance().baseContext,
                 "Пароли не совпадают ${password.text.toString()} and ${passwordRepeat.text.toString()}",
                 Toast.LENGTH_LONG
             ).show()

@@ -4,9 +4,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import ru.nikitaboiko.stoservice.fragments.UserList
 import ru.nikitaboiko.stoservice.fragments.UserRegFragment
 
-class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionListener,
+    UserList.OnFragmentInteractionListener {
+    var fragment = UserList()
+
     override fun onFragmentInteraction(uri: Uri) {
     }
 
@@ -19,24 +23,28 @@ class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionL
         val serviceList = findViewById<View>(R.id.activity_main_button_services_list)
         val userList = findViewById<View>(R.id.activity_main_button_user_list)
 
-        userRegButton.setOnClickListener {
-            var fragment = UserRegFragment()
-            var fTransaction = supportFragmentManager.beginTransaction()
-            fTransaction.add(R.id.activity_main, fragment)
-            fTransaction.commit()
+        /* userRegButton.setOnClickListener {
+             var fragment = UserRegFragment()
+             var fTransaction = supportFragmentManager.beginTransaction()
+             fTransaction.add(R.id.activity_main, fragment)
+             fTransaction.commit()
 
 
-        }
+         }*/
 
         userList.setOnClickListener {
-            var fragment = UserRegFragment()
             var fTransaction = supportFragmentManager.beginTransaction()
             fTransaction.add(R.id.activity_main, fragment)
             fTransaction.commit()
 
 
         }
+    }
 
-
+    override fun onPause() {
+        var fTransaction = supportFragmentManager.beginTransaction()
+        fTransaction.remove(fragment)
+        fTransaction.commit()
+        super.onPause()
     }
 }

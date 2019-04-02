@@ -9,6 +9,7 @@ import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Registration
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) :
     SQLiteOpenHelper(context, name, factory, version) {
@@ -62,12 +63,12 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             values.put(ID, id)
             values.put(USER, user)
             values.put(PASSWORD, password)
-            App.instance()?.database?.insert(USERS_TABLE_NAME, null, values)
-            Toast.makeText(App.instance()?.baseContext, "Сохранен пользователь - $user", Toast.LENGTH_LONG).show()
+            App.instance().database.insert(USERS_TABLE_NAME, null, values)
+            Toast.makeText(App.instance().baseContext, "Сохранен пользователь - $user", Toast.LENGTH_LONG).show()
             id
         } else {
             Toast.makeText(
-                App.instance()?.baseContext,
+                App.instance().baseContext,
                 "Пользователь $user уже есть в базе. Выберите другое имя пользователя",
                 Toast.LENGTH_LONG
             ).show()
@@ -76,7 +77,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
     fun findUserId(user: String): String? {
-        val cursor = App.instance()?.database?.query(
+        val cursor = App.instance().database.query(
             USERS_TABLE_NAME,
             null,
             "UPPER($USER) = '${user.toUpperCase()}'",
@@ -86,8 +87,8 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             null
         ) ?: null
         cursor?.moveToFirst()
-        return if (cursor != null && !cursor?.isAfterLast) {
-            cursor?.getString(0)
+        return if (cursor != null && !cursor.isAfterLast) {
+            cursor.getString(0)
         } else {
             null
         }
@@ -102,8 +103,8 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         values.put(PRICE, service.price)
         values.put(DATE, service.date.toString())
         values.put(DONE, service.done)
-        App.instance()?.database?.insert(SERVICE_TABLE_NAME, null, values)
-        Toast.makeText(App.instance()?.baseContext, "Текущие работы успешно сохранены", Toast.LENGTH_LONG).show()
+        App.instance().database.insert(SERVICE_TABLE_NAME, null, values)
+        Toast.makeText(App.instance().baseContext, "Текущие работы успешно сохранены", Toast.LENGTH_LONG).show()
     }
 
     fun addRegistration(registration: Registration) {
@@ -112,9 +113,9 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         values.put(CAR, registration.car)
         values.put(DATE, registration.date.toString())
         values.put(DONE, registration.comment)
-        App.instance()?.database?.insert(REGISTRATION_TABLE_NAME, null, values)
+        App.instance().database.insert(REGISTRATION_TABLE_NAME, null, values)
         Toast.makeText(
-            App.instance()?.baseContext,
+            App.instance().baseContext,
             "Запись успешно сохранена на дату ${registration.date}",
             Toast.LENGTH_LONG
         ).show()
@@ -127,12 +128,24 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         values.put(USER, findUserId(user))
         values.put(DATE, Date().toString())
         values.put(PRICE, price)
-        App.instance()?.database?.insert(PAY_TABLE_NAME, null, values)
+        App.instance().database.insert(PAY_TABLE_NAME, null, values)
         Toast.makeText(
-            App.instance()?.baseContext,
+            App.instance().baseContext,
             "Выдача денежных средств сотруднику $user в размере $price руб. зафиксирована успешно",
             Toast.LENGTH_LONG
         ).show()
     }
 
+
+    fun getUserList(): ArrayList<String> {
+        val userList = ArrayList<String>()
+        val cursor = App.instance().database.query(USERS_TABLE_NAME, null, null, null, null, null, null)
+        cursor?.moveToFirst()
+        if (cursor != null && !cursor.isAfterLast) {
+            do {
+                userList.add(cursor.getString(1))
+            } while (cursor.moveToNext())
+        }
+        return userList
+    }
 }
