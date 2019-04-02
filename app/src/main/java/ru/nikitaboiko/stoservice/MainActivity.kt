@@ -1,8 +1,10 @@
 package ru.nikitaboiko.stoservice
 
+import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.fragments.UserList
 import ru.nikitaboiko.stoservice.fragments.UserRegFragment
@@ -12,6 +14,10 @@ class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionL
     var fragment = UserList()
 
     override fun onFragmentInteraction(uri: Uri) {
+    }
+
+    override fun onCreateDialog(id: Int, args: Bundle?): Dialog? {
+        return super.onCreateDialog(id, args)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +42,10 @@ class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionL
             var fTransaction = supportFragmentManager.beginTransaction()
             fTransaction.add(R.id.activity_main, fragment)
             fTransaction.commit()
+            var lm = RelativeLayout.LayoutParams(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+            fragment.view?.layoutParams = lm
+            //fragment.view.layoutParams = lm
+
 
 
         }
