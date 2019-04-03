@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TableRows" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#535A66</item>
+        <item name="colorPrimaryDark">#D7C3D1E0</item>
+        <item name="colorAccent">#FF9800</item>
+        <item name="android:textColor">#FF9800</item>
+    </style>
+
 </resources>

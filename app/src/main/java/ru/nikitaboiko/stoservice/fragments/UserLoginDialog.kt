@@ -9,16 +9,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_user_login.view.*
+import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.R
+import ru.nikitaboiko.stoservice.structure.Helpers
 
 class UserLoginDialog : DialogFragment() {
     lateinit var login: TextView
     lateinit var password: EditText
     private lateinit var listener: OnFragmentInteractionListener
+    var username = ""
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = arguments
-        val username = bundle?.getString("user") ?: ""
+        username = bundle?.getString("user") ?: ""
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
         val activ = activity ?: return super.onCreateDialog(savedInstanceState)
         if (cont is UserLoginDialog.OnFragmentInteractionListener) {
@@ -37,8 +40,11 @@ class UserLoginDialog : DialogFragment() {
 
         buttonOk.setOnClickListener {
             checkPass(activ)
-            listener?.onFragmentInteraction("workflow", username)
         }
+        password.setOnClickListener {
+            checkPass(activ)
+        }
+
 
         return builder.create()
     }
@@ -56,7 +62,10 @@ class UserLoginDialog : DialogFragment() {
                 Toast.LENGTH_SHORT
             ).show()
             return
-
+        }
+        if (App.instance().dataControl.passIsCorrect(username, Helpers().delSpaces(password.editableText.toString()))) {
+            listener?.onFragmentInteraction("Workflow", username)
+            dismiss()
         }
     }
 }

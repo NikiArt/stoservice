@@ -151,8 +151,43 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         return userList
     }
 
-    fun checkPassword(password: String) {
-
+    fun passIsCorrect(user: String, password: String): Boolean {
+        var currentPassword = ""
+        val cursor = App.instance().database.query(
+            USERS_TABLE_NAME,
+            null,
+            "UPPER($USER) = '${user.toUpperCase()}'",
+            null,
+            null,
+            null,
+            null
+        ) ?: null
+        cursor?.moveToFirst()
+        if (cursor != null && !cursor.isAfterLast) {
+            currentPassword = cursor.getString(2)
+        } else {
+            Toast.makeText(
+                App.instance().baseContext,
+                "не нашли пользователя $user в базе",
+                Toast.LENGTH_LONG
+            ).show()
+            return false
+        }
+        if (currentPassword.equals(md5Hex(password))) {
+            Toast.makeText(
+                App.instance().baseContext,
+                "пароль верный",
+                Toast.LENGTH_LONG
+            ).show()
+            return true
+        } else {
+            Toast.makeText(
+                App.instance().baseContext,
+                "пароль не верный",
+                Toast.LENGTH_LONG
+            ).show()
+            return false
+        }
     }
 
     fun md5Hex(text: String): String {
