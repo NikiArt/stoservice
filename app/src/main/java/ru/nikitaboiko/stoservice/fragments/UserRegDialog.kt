@@ -7,10 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_user_reg.view.*
-import org.apache.commons.codec.binary.Hex
-import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.R
+import ru.nikitaboiko.stoservice.structure.Helpers
 
 
 class UserRegDialog : DialogFragment() {
@@ -33,7 +32,7 @@ class UserRegDialog : DialogFragment() {
         buttonAdd.setOnClickListener {
             addUser()
         }
-        // Остальной код
+
         return builder.create()
     }
 
@@ -64,13 +63,15 @@ class UserRegDialog : DialogFragment() {
         }
 
         if (password.text.toString().equals(passwordRepeat.text.toString())) {
-            val passMd5 = Hex.encodeHex(DigestUtils.md5("vicomlite" + password.text.toString())).joinToString("")
-            App.instance().dataControl.addUser(login.text.toString(), passMd5)
-            dismiss()
+            val id = App.instance().dataControl.addUser(
+                Helpers().delSpaces(login.text.toString(), false),
+                Helpers().delSpaces(password.text.toString())
+            )
+            if (id != null) dismiss()
         } else {
             Toast.makeText(
                 App.instance().baseContext,
-                "Пароли не совпадают ${password.text.toString()} and ${passwordRepeat.text.toString()}",
+                "Пароли не совпадают",
                 Toast.LENGTH_LONG
             ).show()
         }

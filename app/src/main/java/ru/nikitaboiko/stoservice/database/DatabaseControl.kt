@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
+import org.apache.commons.codec.binary.Hex
+import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Registration
 import ru.nikitaboiko.stoservice.structure.Service
@@ -62,7 +64,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             val values = ContentValues()
             values.put(ID, id)
             values.put(USER, user)
-            values.put(PASSWORD, password)
+            values.put(PASSWORD, md5Hex(password))
             App.instance().database.insert(USERS_TABLE_NAME, null, values)
             Toast.makeText(App.instance().baseContext, "Сохранен пользователь - $user", Toast.LENGTH_LONG).show()
             id
@@ -147,5 +149,13 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             } while (cursor.moveToNext())
         }
         return userList
+    }
+
+    fun checkPassword(password: String) {
+
+    }
+
+    fun md5Hex(text: String): String {
+        return Hex.encodeHex(DigestUtils.md5("vicomlite$text")).joinToString("")
     }
 }

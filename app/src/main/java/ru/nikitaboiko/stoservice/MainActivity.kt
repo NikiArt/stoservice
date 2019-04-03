@@ -1,24 +1,30 @@
 package ru.nikitaboiko.stoservice
 
-import android.app.Dialog
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.fragments.UserList
 import ru.nikitaboiko.stoservice.fragments.UserListDialog
+import ru.nikitaboiko.stoservice.fragments.UserLoginDialog
 import ru.nikitaboiko.stoservice.fragments.UserRegDialog
-import ru.nikitaboiko.stoservice.fragments.UserRegFragment
 
-class MainActivity : AppCompatActivity(), UserRegFragment.OnFragmentInteractionListener,
-    UserList.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionListener,
+    UserListDialog.OnFragmentInteractionListener {
     var fragment = UserList()
 
-    override fun onFragmentInteraction(uri: Uri) {
-    }
-
-    override fun onCreateDialog(id: Int, args: Bundle?): Dialog? {
-        return super.onCreateDialog(id, args)
+    override fun onFragmentInteraction(nextActivity: String, user: String) {
+        Toast.makeText(this, "onFragmentInteraction $nextActivity $user", Toast.LENGTH_LONG).show()
+        when (nextActivity) {
+            "UserLogin" -> {
+                val manager = supportFragmentManager
+                val myDialogFragment = UserLoginDialog()
+                val bundle = Bundle()
+                bundle.putString("user", user)
+                myDialogFragment.arguments = bundle
+                myDialogFragment.show(manager, "dialog")
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
