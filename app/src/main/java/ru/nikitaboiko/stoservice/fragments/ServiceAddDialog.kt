@@ -9,6 +9,7 @@ import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_service_add.view.*
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.R
+import ru.nikitaboiko.stoservice.structure.Helpers
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
 
@@ -71,6 +72,7 @@ class ServiceAddDialog : DialogFragment() {
             Date()
         )
         App.instance().dataControl.addService(currentService)
+        Helpers.instance.servicesList.add(currentService)
         listener.onFragmentInteraction("UpdateServices", "")
         dismiss()
     }

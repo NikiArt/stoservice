@@ -8,6 +8,7 @@ import android.widget.Toast
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
+import ru.nikitaboiko.stoservice.structure.Helpers
 import ru.nikitaboiko.stoservice.structure.Registration
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
@@ -87,12 +88,30 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             null,
             null,
             null
-        ) ?: null
+        )
         cursor?.moveToFirst()
         return if (cursor != null && !cursor.isAfterLast) {
             cursor.getString(0)
         } else {
             null
+        }
+    }
+
+    fun getUser(userId: String): String {
+        val cursor = App.instance().database.query(
+            USERS_TABLE_NAME,
+            null,
+            "UPPER($USER) = '${userId.toUpperCase()}'",
+            null,
+            null,
+            null,
+            null
+        )
+        cursor?.moveToFirst()
+        return if (cursor != null && !cursor.isAfterLast) {
+            cursor.getString(1)
+        } else {
+            ""
         }
     }
 
@@ -185,6 +204,36 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         }
     }
 
+    fun getServices(user: String = "", startDate: Date? = null, endDate: Date? = null) {
+        val serviceList = Helpers.instance.servicesList
+        serviceList.clear()
+
+        val req = makeRequirement(user, startDate, endDate)
+        var currentDate: Date
+        var status: Boolean
+
+        val cursor = App.instance.database.query(SERVICE_TABLE_NAME, null, req, null, null, null, null)
+        cursor?.moveToFirst()
+        if (!cursor.isAfterLast) {
+            do {
+                //currentDate = Helpers.instance.getDatebyString(cursor.getString(5))
+                status = cursor.getInt(6) == 1
+                val service = Service(
+                    cursor.getString(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    getUser(cursor.getString(3)),
+                    cursor.getDouble(4),
+                    Date(cursor.getLong(5) * 1000),
+                    status
+                )
+                serviceList.add(service)
+            } while (cursor.moveToNext())
+        }
+
+
+    }
+
     fun getTotalAmount(user: String = "", startDate: Date? = null): Double {
         var totalAmount = 0.0
         val req = makeRequirement(user, startDate)
@@ -208,7 +257,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
 
     fun getTotalSalary(user: String = "", startDate: Date? = null): Double {
         var totalAmount = 0.0
-        val req = makeRequirement(user, startDate)
+        val req = makeRequirement(user, startDate, Date())
 
         val cursor =
             App.instance().database.query(PAY_TABLE_NAME, arrayOf("SUM(PRICE) AS amount"), req, null, null, null, null)
@@ -223,9 +272,12 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         return Hex.encodeHex(DigestUtils.md5("vicomlite$text")).joinToString("")
     }
 
-    private fun makeRequirement(user: String, startDate: Date?): String? {
-        val period =
-            if (startDate == null) "" else "DATE >= '${(startDate.time / 1000)}' AND  DATE <= '${(Date().time / 1000)}'"
+    private fun makeRequirement(user: String, startDate: Date? = null, endDate: Date? = null): String? {
+        var period =
+            if (startDate == null) "" else "DATE >= '${(startDate.time / 1000)}'"
+        if (!period.isEmpty() && endDate != null) {
+            period += " AND  DATE <= '${(endDate.time / 1000)}'"
+        }
         val userText = if (user.isEmpty()) "" else "USER = '${findUserId(user)}'"
         val req =
             if (userText.isEmpty() && period.isEmpty()) null else (period + (if (period.isEmpty() || userText.isEmpty()) "" else " AND ") + userText)

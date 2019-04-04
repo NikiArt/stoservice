@@ -8,7 +8,7 @@
 
     <TextView
             android:text="Введите пароль"
-            android:textSize="8pt"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:layout_width="168dp"
             android:textAlignment="center"
@@ -17,6 +17,7 @@
             android:text="Пользователь: "
             android:layout_width="168dp"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:id="@+id/fragment_user_login_username"/>
     <EditText
             android:layout_width="168dp"

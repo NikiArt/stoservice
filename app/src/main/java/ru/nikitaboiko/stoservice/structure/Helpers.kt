@@ -2,8 +2,20 @@ package ru.nikitaboiko.stoservice.structure
 
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class Helpers {
+    var servicesList = ArrayList<Service>()
+    var registration = ArrayList<Registration>()
+
+    private object Holder {
+        val INSTANCE = Helpers()
+    }
+
+    companion object {
+        val instance: Helpers by lazy { Holder.INSTANCE }
+    }
+
     fun delSpaces(text: String, full: Boolean = true): String {
         val charArray = text.toCharArray()
         var convertedText = ""
@@ -30,12 +42,12 @@ class Helpers {
     }
 
     fun getDatebyString(dateText: String, format: String = "dd MMMM y"): Date {
-        val sdf = SimpleDateFormat(format)
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
         return sdf.parse(dateText)
     }
 
     fun getStringbyDate(date: Date, format: String = "dd MMMM y"): String {
-        val sdf = SimpleDateFormat(format)
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
         return sdf.format(date)
     }
 }
