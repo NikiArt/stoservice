@@ -103,7 +103,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         values.put(SERVICE, service.service)
         values.put(USER, findUserId(service.user))
         values.put(PRICE, service.price)
-        values.put(DATE, service.date.toString())
+        values.put(DATE, (service.date.time / 1000))
         values.put(DONE, service.done)
         App.instance().database.insert(SERVICE_TABLE_NAME, null, values)
         Toast.makeText(App.instance().baseContext, "Текущие работы успешно сохранены", Toast.LENGTH_LONG).show()
@@ -206,7 +206,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
 
-    fun getTotalSalary(user: String, startDate: Date): Double {
+    fun getTotalSalary(user: String = "", startDate: Date? = null): Double {
         var totalAmount = 0.0
         val req = makeRequirement(user, startDate)
 
@@ -224,7 +224,8 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
     private fun makeRequirement(user: String, startDate: Date?): String? {
-        val period = if (startDate == null) "" else "DATE >= '${startDate?.time}' AND  DATE <= '${Date().time}'"
+        val period =
+            if (startDate == null) "" else "DATE >= '${(startDate.time / 1000)}' AND  DATE <= '${(Date().time / 1000)}'"
         val userText = if (user.isEmpty()) "" else "USER = '${findUserId(user)}'"
         val req =
             if (userText.isEmpty() && period.isEmpty()) null else (period + (if (period.isEmpty() || userText.isEmpty()) "" else " AND ") + userText)

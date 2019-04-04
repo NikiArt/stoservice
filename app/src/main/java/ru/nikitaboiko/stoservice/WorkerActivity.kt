@@ -5,14 +5,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.fragments.DateDialog
+import ru.nikitaboiko.stoservice.fragments.ServiceAddDialog
 import ru.nikitaboiko.stoservice.structure.Helpers
 import java.util.*
 
-class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionListener {
-    lateinit var priceDate: TextView
-    lateinit var amount: TextView
-    lateinit var sailary: TextView
-    lateinit var user: String
+class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionListener,
+    ServiceAddDialog.OnFragmentInteractionListener {
+    private lateinit var priceDate: TextView
+    private lateinit var amount: TextView
+    private lateinit var salary: TextView
+    private lateinit var totalSalary: TextView
+    private lateinit var user: String
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
@@ -20,18 +23,22 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
                 priceDate.text = unit
                 updateAmounts()
             }
+            "UpdateServices" -> {
+
+            }
         }
     }
 
     private fun updateAmounts() {
-        amount.text = "Заработано за период: ${App.instance().dataControl.getTotalAmount(
-            user,
-            Helpers().getDatebyString(priceDate.text.toString())
-        )} \u20BD"
-        sailary.text = "Получено за период: ${App.instance().dataControl.getTotalSalary(
-            user,
-            Helpers().getDatebyString(priceDate.text.toString())
-        )} \u20BD"
+        val currentAmount =
+            App.instance().dataControl.getTotalAmount(user, Helpers().getDatebyString(priceDate.text.toString())) * 0.4
+        val currentSalary =
+            App.instance().dataControl.getTotalSalary(user, Helpers().getDatebyString(priceDate.text.toString()))
+
+        amount.text = "Заработано за период: $currentAmount \u20BD"
+        salary.text = "Получено за период: $currentSalary \u20BD"
+        totalSalary.text =
+            "${App.instance().dataControl.getTotalAmount(user) * 0.4 - App.instance().dataControl.getTotalSalary(user)}"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,13 +51,23 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         val addWorkButton = findViewById<View>(R.id.activity_worker_button_addwork)
         val workList = findViewById<View>(R.id.activity_worker_list)
         amount = findViewById<View>(R.id.activity_worker_price_org) as TextView
-        sailary = findViewById<View>(R.id.activity_worker_price_worker) as TextView
+        salary = findViewById<View>(R.id.activity_worker_price_worker) as TextView
         priceDate = findViewById<View>(R.id.activity_worker_date_price) as TextView
+        totalSalary = findViewById<View>(R.id.activity_worker_total_salary) as TextView
         activityLabel.text = "Рабочее место сотрудника: $user"
 
         priceDate.text = Helpers().getStringbyDate(Date(), "01 MMMM y")
         priceDate.setOnClickListener {
             openDateDialog()
+        }
+
+        addWorkButton.setOnClickListener {
+            val manager = supportFragmentManager
+            val myDialogFragment = ServiceAddDialog()
+            val bundle = Bundle()
+            bundle.putString("user", user)
+            myDialogFragment.arguments = bundle
+            myDialogFragment.show(manager, "dialog")
         }
 
         updateAmounts()
