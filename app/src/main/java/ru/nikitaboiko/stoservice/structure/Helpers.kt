@@ -1,7 +1,10 @@
 package ru.nikitaboiko.stoservice.structure
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 class Helpers {
-    public fun delSpaces(text: String, full: Boolean = true): String {
+    fun delSpaces(text: String, full: Boolean = true): String {
         val charArray = text.toCharArray()
         var convertedText = ""
         if (full) {
@@ -24,5 +27,15 @@ class Helpers {
             }
         }
         return convertedText.toString()
+    }
+
+    fun getDatebyString(dateText: String, format: String = "dd MMMM y"): Date {
+        val sdf = SimpleDateFormat(format)
+        return sdf.parse(dateText)
+    }
+
+    fun getStringbyDate(date: Date, format: String = "dd MMMM y"): String {
+        val sdf = SimpleDateFormat(format)
+        return sdf.format(date)
     }
 }

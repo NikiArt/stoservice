@@ -51,7 +51,7 @@ class UserLoginDialog : DialogFragment() {
 
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(currentActivity: String, user: String)
+        fun onFragmentInteraction(currentActivity: String, unit: String)
     }
 
     private fun checkPass(activ: Activity) {

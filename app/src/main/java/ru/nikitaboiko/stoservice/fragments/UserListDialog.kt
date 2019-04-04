@@ -29,6 +29,6 @@ class UserListDialog : DialogFragment() {
     }
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(nextActivity: String, user: String)
+        fun onFragmentInteraction(nextActivity: String, unit: String)
     }
 }

@@ -38,11 +38,11 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         const val CREATE_USERS_TABLE = "create table $USERS_TABLE_NAME ( $ID TEXT primary key," +
                 " $USER TEXT NOT NULL, $PASSWORD TEXT NOT NULL)"
         const val CREATE_SERVICE_TABLE = "create table $SERVICE_TABLE_NAME ( $ID TEXT primary key," +
-                " $CAR TEXT NOT NULL, $SERVICE TEXT, $USER TEXT NOT NULL, $PRICE REAL, $DATE TEXT NOT NULL, $DONE INTEGER)"
+                " $CAR TEXT NOT NULL, $SERVICE TEXT, $USER TEXT NOT NULL, $PRICE REAL, $DATE INTEGER NOT NULL, $DONE INTEGER)"
         const val CREATE_REGISTRATION_TABLE = "create table $REGISTRATION_TABLE_NAME ( $ID TEXT primary key," +
-                " $CAR TEXT NOT NULL, $DATE TEXT NOT NULL, $COMMENT TEXT)"
+                " $CAR TEXT NOT NULL, $DATE INTEGER NOT NULL, $COMMENT TEXT)"
         const val CREATE_PAY_TABLE = "create table $PAY_TABLE_NAME ( $ID TEXT primary key," +
-                " $USER TEXT NOT NULL, $DATE TEXT NOT NULL, $PRICE TEXT)"
+                " $USER TEXT NOT NULL, $DATE INTEGER NOT NULL, $PRICE REAL, $COMMENT TEXT)"
 
     }
 
@@ -174,11 +174,6 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             return false
         }
         if (currentPassword.equals(md5Hex(password))) {
-            Toast.makeText(
-                App.instance().baseContext,
-                "пароль верный",
-                Toast.LENGTH_LONG
-            ).show()
             return true
         } else {
             Toast.makeText(
@@ -190,7 +185,49 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         }
     }
 
+    fun getTotalAmount(user: String = "", startDate: Date? = null): Double {
+        var totalAmount = 0.0
+        val req = makeRequirement(user, startDate)
+
+        val cursor = App.instance().database.query(
+            SERVICE_TABLE_NAME,
+            arrayOf("SUM(PRICE) AS amount"),
+            req,
+            null,
+            null,
+            null,
+            null
+        )
+        cursor?.moveToFirst()
+        if (cursor != null && !cursor.isAfterLast) {
+            totalAmount = cursor.getDouble(0)
+        }
+        return totalAmount
+    }
+
+
+    fun getTotalSalary(user: String, startDate: Date): Double {
+        var totalAmount = 0.0
+        val req = makeRequirement(user, startDate)
+
+        val cursor =
+            App.instance().database.query(PAY_TABLE_NAME, arrayOf("SUM(PRICE) AS amount"), req, null, null, null, null)
+        cursor?.moveToFirst()
+        if (cursor != null && !cursor.isAfterLast) {
+            totalAmount = cursor.getDouble(0)
+        }
+        return totalAmount
+    }
+
     fun md5Hex(text: String): String {
         return Hex.encodeHex(DigestUtils.md5("vicomlite$text")).joinToString("")
+    }
+
+    private fun makeRequirement(user: String, startDate: Date?): String? {
+        val period = if (startDate == null) "" else "DATE >= '${startDate?.time}' AND  DATE <= '${Date().time}'"
+        val userText = if (user.isEmpty()) "" else "USER = '${findUserId(user)}'"
+        val req =
+            if (userText.isEmpty() && period.isEmpty()) null else (period + (if (period.isEmpty() || userText.isEmpty()) "" else " AND ") + userText)
+        return req
     }
 }

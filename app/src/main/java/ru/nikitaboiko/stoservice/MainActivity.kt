@@ -12,18 +12,19 @@ import ru.nikitaboiko.stoservice.fragments.UserRegDialog
 class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionListener,
     UserListDialog.OnFragmentInteractionListener {
 
-    override fun onFragmentInteraction(nextActivity: String, user: String) {
+    override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
             "UserLogin" -> {
                 val manager = supportFragmentManager
                 val myDialogFragment = UserLoginDialog()
                 val bundle = Bundle()
-                bundle.putString("user", user)
+                bundle.putString("user", unit)
                 myDialogFragment.arguments = bundle
                 myDialogFragment.show(manager, "dialog")
             }
             "Workflow" -> {
                 val intent = Intent(this, WorkerActivity::class.java)
+                intent.putExtra("user", unit)
                 startActivity(intent)
             }
         }

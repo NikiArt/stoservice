@@ -12,10 +12,12 @@ import java.util.*
 class DateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     lateinit var startDate: Date
     val sdf = SimpleDateFormat("dd MMMM y")
+    private lateinit var listener: OnFragmentInteractionListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = arguments
         val incomingDate = bundle?.getString("startDate") ?: ""
+        listener = context as OnFragmentInteractionListener
         startDate = sdf.parse(incomingDate)
         val c = Calendar.getInstance()
         c.time = startDate
@@ -31,7 +33,12 @@ class DateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
         val c = Calendar.getInstance()
         c.set(year, month, day)
 
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val sdf = SimpleDateFormat("dd MMMM y")
         val formattedDate = sdf.format(c.getTime())
+        listener.onFragmentInteraction("SetDate", formattedDate)
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(nextActivity: String, unit: String)
     }
 }
