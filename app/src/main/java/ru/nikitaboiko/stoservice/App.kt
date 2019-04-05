@@ -8,9 +8,9 @@ import ru.nikitaboiko.stoservice.database.DatabaseControl
 import ru.nikitaboiko.stoservice.services.MainService
 
 class App : Application() {
-    var dataControl: DatabaseControl? = null
+    lateinit var dataControl: DatabaseControl
         private set
-    var database: SQLiteDatabase? = null
+    lateinit var database: SQLiteDatabase
         private set
 
     override fun onCreate() {
@@ -18,14 +18,14 @@ class App : Application() {
         instance = this
         startService(Intent(this, MainService::class.java))
         dataControl = DatabaseControl(this, "database.db", null, 1)
-        database = dataControl!!.getWritableDatabase()
+        database = dataControl.getWritableDatabase()
         Log.i("DDLog", "startService(): Done!")
     }
 
     companion object {
-        private var instance: App? = null
+        lateinit var instance: App
 
-        fun instance(): App? {
+        fun instance(): App {
             return instance
         }
     }

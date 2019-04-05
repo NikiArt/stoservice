@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:id="@+id/fragment_user_login">
+
+    <TextView
+            android:text="Введите пароль"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_width="168dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"/>
+    <TextView
+            android:text="Пользователь: "
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/fragment_user_login_username"/>
+    <EditText
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/fragment_user_login_password"/>
+    <Button
+            android:text="Войти"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/fragment_user_login_button_ok"/>
+</LinearLayout>
