@@ -9,7 +9,7 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Helpers
-import ru.nikitaboiko.stoservice.structure.Registration
+import ru.nikitaboiko.stoservice.structure.Record
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,13 +23,15 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
 
         const val USERS_TABLE_NAME = "Users"
         const val SERVICE_TABLE_NAME = "Service"
-        const val REGISTRATION_TABLE_NAME = "Registration"
+        const val RECORD_TABLE_NAME = "Record"
         const val PAY_TABLE_NAME = "Pay"
 
         const val ID = "id"
         const val USER = "user"
         const val PASSWORD = "password"
         const val CAR = "car"
+        const val CLIENT = "client"
+        const val TEL = "tel"
         const val SERVICE = "service"
         const val PRICE = "price"
         const val DATE = "date" //Date format: "YYYY-MM-DD HH:MM"
@@ -40,8 +42,8 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                 " $USER TEXT NOT NULL, $PASSWORD TEXT NOT NULL)"
         const val CREATE_SERVICE_TABLE = "create table $SERVICE_TABLE_NAME ( $ID TEXT primary key," +
                 " $CAR TEXT NOT NULL, $SERVICE TEXT, $USER TEXT NOT NULL, $PRICE REAL, $DATE INTEGER NOT NULL, $DONE INTEGER)"
-        const val CREATE_REGISTRATION_TABLE = "create table $REGISTRATION_TABLE_NAME ( $ID TEXT primary key," +
-                " $CAR TEXT NOT NULL, $DATE INTEGER NOT NULL, $COMMENT TEXT)"
+        const val CREATE_RECORD_TABLE = "create table $RECORD_TABLE_NAME ( $ID TEXT primary key," +
+                " $CAR TEXT NOT NULL, $DATE INTEGER NOT NULL, $CLIENT TEXT, $TEL TEXT, $USER TEXT, $COMMENT TEXT)"
         const val CREATE_PAY_TABLE = "create table $PAY_TABLE_NAME ( $ID TEXT primary key," +
                 " $USER TEXT NOT NULL, $DATE INTEGER NOT NULL, $PRICE REAL, $COMMENT TEXT)"
 
@@ -50,7 +52,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_USERS_TABLE)
         sqLiteDatabase.execSQL(CREATE_SERVICE_TABLE)
-        sqLiteDatabase.execSQL(CREATE_REGISTRATION_TABLE)
+        sqLiteDatabase.execSQL(CREATE_RECORD_TABLE)
         sqLiteDatabase.execSQL(CREATE_PAY_TABLE)
     }
 
@@ -128,18 +130,18 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         Toast.makeText(App.instance().baseContext, "Текущие работы успешно сохранены", Toast.LENGTH_LONG).show()
     }
 
-    fun addRegistration(registration: Registration) {
+    fun addRecord(record: Record) {
         val values = ContentValues()
-        values.put(ID, registration.id)
-        values.put(CAR, registration.car)
-        values.put(DATE, registration.date.toString())
-        values.put(DONE, registration.comment)
-        App.instance().database.insert(REGISTRATION_TABLE_NAME, null, values)
-        Toast.makeText(
-            App.instance().baseContext,
-            "Запись успешно сохранена на дату ${registration.date}",
-            Toast.LENGTH_LONG
-        ).show()
+        values.put(ID, record.id)
+        values.put(CAR, record.car)
+        values.put(DATE, (record.date.time / 1000))
+        values.put(CLIENT, record.client)
+        values.put(TEL, record.telephone)
+        values.put(USER, findUserId(record.user))
+        values.put(COMMENT, record.comment)
+        App.instance().database.insert(RECORD_TABLE_NAME, null, values)
+        Toast.makeText(App.instance().baseContext, "Запись успешно сохранена на дату ${record.date}", Toast.LENGTH_LONG)
+            .show()
     }
 
     fun addPay(user: String, price: Double) {
@@ -228,6 +230,34 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                     status
                 )
                 serviceList.add(service)
+            } while (cursor.moveToNext())
+        }
+
+
+    }
+
+    fun getRecords(currentDate: Date? = null) {
+        val registration = Helpers.instance.record
+        registration.clear()
+        val startDate = if (currentDate != null) currentDate else null
+        val endDate = if (currentDate != null) Date(currentDate.time + 1000 * 60 * 60 * 24) else null
+        val req = makeRequirement("", startDate, endDate)
+
+
+        val cursor = App.instance.database.query(RECORD_TABLE_NAME, null, req, null, null, null, null)
+        cursor?.moveToFirst()
+        if (!cursor.isAfterLast) {
+            do {
+                val record = Record(
+                    cursor.getString(0),
+                    cursor.getString(1),
+                    Date(cursor.getLong(2) * 1000),
+                    cursor.getString(3),
+                    cursor.getString(4),
+                    cursor.getString(5) ?: "",
+                    cursor.getString(6)
+                )
+                registration.add(record)
             } while (cursor.moveToNext())
         }
 

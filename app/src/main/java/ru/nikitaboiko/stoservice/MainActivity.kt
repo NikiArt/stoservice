@@ -35,10 +35,9 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
         setContentView(R.layout.activity_main)
 
         val userRegButton = findViewById<View>(R.id.activity_main_button_user_reg)
-        val addService = findViewById<View>(R.id.activity_main_button_add_service)
-        val serviceList = findViewById<View>(R.id.activity_main_button_services_list)
         val userList = findViewById<View>(R.id.activity_main_button_user_list)
-
+        val records = findViewById<View>(R.id.activity_main_button_records)
+        val admin = findViewById<View>(R.id.activity_main_button_admin)
         userRegButton.setOnClickListener {
             val manager = supportFragmentManager
             val myDialogFragment = UserRegDialog()
@@ -49,6 +48,11 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
             val manager = supportFragmentManager
             val myDialogFragment = UserListDialog()
             myDialogFragment.show(manager, "dialog")
+        }
+
+        records.setOnClickListener {
+            val intent = Intent(this, RecordOnRepair::class.java)
+            startActivity(intent)
         }
     }
 }
