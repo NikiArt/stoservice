@@ -31,19 +31,22 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
             "UpdateServices" -> {
                 updateAmounts()
                 servicesAdapter.update()
+                serviceList.scrollToPosition(Helpers.instance.servicesList.size - 1)
             }
         }
     }
 
     private fun updateAmounts() {
 
-        val currentAmount =
+        var currentAmount =
             App.instance().dataControl.getTotalAmount(
                 user,
                 Helpers.instance.getDatebyString(priceDate.text.toString())
             ) * 0.4
-        val currentSalary =
+        currentAmount = Math.rint(100.0 * currentAmount) / 100.0
+        var currentSalary =
             App.instance().dataControl.getTotalSalary(user, Helpers.instance.getDatebyString(priceDate.text.toString()))
+        currentSalary = Math.rint(100.0 * currentSalary) / 100.0
 
         amount.text = "Заработано за период: $currentAmount \u20BD"
         salary.text = "Получено за период: $currentSalary \u20BD"
@@ -61,13 +64,18 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
         val activityLabel = findViewById<View>(R.id.activity_worker_label_user) as TextView
         val addWorkButton = findViewById<View>(R.id.activity_worker_button_addwork)
-        val workList = findViewById<View>(R.id.activity_worker_list)
         amount = findViewById<View>(R.id.activity_worker_price_org) as TextView
         salary = findViewById<View>(R.id.activity_worker_price_worker) as TextView
         priceDate = findViewById<View>(R.id.activity_worker_date_price) as TextView
         totalSalary = findViewById<View>(R.id.activity_worker_total_salary) as TextView
         serviceList = findViewById<View>(R.id.activity_worker_list) as RecyclerView
+        val footer = findViewById<View>(R.id.activity_worker_footer)
+
         activityLabel.text = "Рабочее место сотрудника: $user"
+
+
+        val dp = resources.displayMetrics
+        serviceList.layoutParams.height = (dp.heightPixels - (dp.density * 400)).toInt()
 
         priceDate.text = Helpers().getStringbyDate(Date(), "01 MMMM y")
         priceDate.setOnClickListener {
@@ -88,9 +96,13 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         updateAmounts()
     }
 
+
     fun initServiceList() {
-        serviceList.layoutManager = LinearLayoutManager(this)
-        serviceList.setAdapter(servicesAdapter)
+        val lm = LinearLayoutManager(this)
+        lm.stackFromEnd = true
+        serviceList.layoutManager = lm
+        serviceList.adapter = servicesAdapter
+
     }
 
     private fun openDateDialog() {
