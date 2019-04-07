@@ -9,6 +9,7 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Helpers
+import ru.nikitaboiko.stoservice.structure.Pay
 import ru.nikitaboiko.stoservice.structure.Record
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
@@ -262,6 +263,31 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         }
 
 
+    }
+
+    fun deleteRecord(record: Record) {
+        App.instance.database.delete(RECORD_TABLE_NAME, "id = '${record.id}'", null)
+        Toast.makeText(App.instance.baseContext, "Запись удалена со времени ${record.date}", Toast.LENGTH_LONG).show()
+    }
+
+    fun deletePay(pay: Pay) {
+        App.instance.database.delete(PAY_TABLE_NAME, "id = '${pay.id}'", null)
+        Toast.makeText(
+            App.instance().baseContext,
+            "Выдача ${pay.price} \u20BD сотруднику ${pay.user} отменена",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    fun deleteService(service: Service) {
+        App.instance.database.delete(SERVICE_TABLE_NAME, "id = '${service.id}'", null)
+        Toast.makeText(App.instance().baseContext, "Работы удалены успешно", Toast.LENGTH_LONG).show()
+    }
+
+    fun deleteUser(user: String) {
+        val userId = findUserId(user)
+        App.instance.database.delete(USERS_TABLE_NAME, "id = '$userId'", null)
+        Toast.makeText(App.instance().baseContext, "Пользователь $user удален", Toast.LENGTH_LONG).show()
     }
 
     fun getTotalAmount(user: String = "", startDate: Date? = null): Double {

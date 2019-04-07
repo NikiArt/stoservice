@@ -20,17 +20,18 @@ class RecordAddDialog : AppCompatActivity(), DateDialog.OnFragmentInteractionLis
     lateinit var telephone: EditText
     lateinit var comment: EditText
     lateinit var dateRec: TextView
+    lateinit var shadowDate: String
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
             "SetDate" -> {
-                dateRec.text = unit
+                shadowDate = unit
                 val manager = supportFragmentManager
                 val myDialogFragment = TimeDialog()
                 myDialogFragment.show(manager, "dialog")
             }
             "SetTime" -> {
-                dateRec.text = "${dateRec.text} $unit"
+                dateRec.text = "$shadowDate $unit"
             }
         }
     }
@@ -48,6 +49,7 @@ class RecordAddDialog : AppCompatActivity(), DateDialog.OnFragmentInteractionLis
 
         val modDate = (Date().time + 1000 * 60 * 60)
         dateRec.text = Helpers.instance.getStringbyDate(Date(modDate), "dd MMMM y HH:00")
+        shadowDate = dateRec.text.toString()
         buttonAdd.setOnClickListener {
             addRecord()
         }

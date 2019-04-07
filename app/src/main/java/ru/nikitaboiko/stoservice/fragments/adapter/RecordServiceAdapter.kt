@@ -9,7 +9,9 @@ import kotlinx.android.synthetic.main.record_item.view.*
 import ru.nikitaboiko.stoservice.R
 import ru.nikitaboiko.stoservice.structure.Helpers
 
+
 class RecordServiceAdapter : RecyclerView.Adapter<RecordServiceAdapter.MyViewHolder>() {
+    private lateinit var listener: OnFragmentInteractionListener
 
     class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         var car: TextView = view.record_item_car
@@ -17,6 +19,10 @@ class RecordServiceAdapter : RecyclerView.Adapter<RecordServiceAdapter.MyViewHol
         var client: TextView = view.record_item_client
         var telephone: TextView = view.record_item_telephone
         var comment: TextView = view.record_item_comment
+    }
+
+    fun setLongClickListener(mlistener: OnFragmentInteractionListener) {
+        listener = mlistener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -36,9 +42,17 @@ class RecordServiceAdapter : RecyclerView.Adapter<RecordServiceAdapter.MyViewHol
         holder.client.text = Helpers.instance.record[position].client
         holder.telephone.text = Helpers.instance.record[position].telephone
         holder.comment.text = Helpers.instance.record[position].comment
+        holder.view.setOnLongClickListener {
+            listener.onFragmentInteraction("deleteRecord", position)
+            true
+        }
     }
 
     fun update() {
         notifyDataSetChanged()
+    }
+
+    interface OnFragmentInteractionListener {
+        fun onFragmentInteraction(currentActivity: String, unit: Int)
     }
 }

@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ru.nikitaboiko.stoservice.fragments.RecordAddDialog
+import ru.nikitaboiko.stoservice.fragments.RecordDeleteDialog
 import ru.nikitaboiko.stoservice.fragments.adapter.RecordServiceAdapter
 import ru.nikitaboiko.stoservice.structure.Helpers
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class RecordOnRepair : AppCompatActivity() {
+class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInteractionListener,
+    RecordDeleteDialog.OnFragmentInteractionListener {
     private lateinit var calendar: CalendarView
     private lateinit var fab: FloatingActionButton
     private lateinit var activityLabel: TextView
@@ -24,6 +26,22 @@ class RecordOnRepair : AppCompatActivity() {
     private val recordsAdapter = RecordServiceAdapter()
     private val helpClass = Helpers.instance
     private var calendarDate = helpClass.getDatebyString(helpClass.getStringbyDate(Date()))
+
+    override fun onFragmentInteraction(currentActivity: String, unit: Int) {
+        when (currentActivity) {
+            "deleteRecord" -> {
+                val manager = supportFragmentManager
+                val myDialogFragment = RecordDeleteDialog()
+                val bundle = Bundle()
+                bundle.putInt("recordId", unit)
+                myDialogFragment.arguments = bundle
+                myDialogFragment.show(manager, "dialog")
+            }
+            "updateList" -> {
+                updateRecordList(calendarDate)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +51,7 @@ class RecordOnRepair : AppCompatActivity() {
         recordsList = findViewById<View>(R.id.activity_record_on_repair_list) as RecyclerView
         fab = findViewById<View>(R.id.activity_record_on_repair_button_add) as FloatingActionButton
         activityLabel.text = "Запись на ремонт ${Helpers.instance.getStringbyDate(Date(), "dd MMMM y")}"
+        recordsAdapter.setLongClickListener(this)
         fab.setOnClickListener {
             val intent = Intent(this, RecordAddDialog::class.java)
             startActivity(intent)
