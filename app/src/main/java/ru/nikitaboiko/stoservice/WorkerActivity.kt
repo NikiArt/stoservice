@@ -51,8 +51,7 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
         amount.text = "Заработано за период: $currentAmount \u20BD"
         salary.text = "Получено за период: $currentSalary \u20BD"
-        totalSalary.text =
-            "${App.instance().dataControl.getTotalAmount(user) * 0.4 - App.instance().dataControl.getTotalSalary(user)}"
+        totalSalary.text = "${currentAmount - currentSalary} \u20BD"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,9 +99,9 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
     fun initServiceList() {
         val lm = LinearLayoutManager(this)
-        lm.stackFromEnd = true
         serviceList.layoutManager = lm
         serviceList.adapter = servicesAdapter
+        serviceList.smoothScrollToPosition(if (helpClass.servicesList.isEmpty()) 0 else (helpClass.servicesList.size - 1))
 
     }
 
