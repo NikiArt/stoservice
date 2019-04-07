@@ -1,5 +1,6 @@
 package ru.nikitaboiko.stoservice
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.CalendarView
@@ -15,17 +16,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class RecordOnRepair : AppCompatActivity(), RecordAddDialog.OnFragmentInteractionListener {
+class RecordOnRepair : AppCompatActivity() {
     private lateinit var calendar: CalendarView
     private lateinit var fab: FloatingActionButton
     private lateinit var activityLabel: TextView
     private lateinit var recordsList: RecyclerView
     private val recordsAdapter = RecordServiceAdapter()
-
-    override fun onFragmentInteraction(nextActivity: String, unit: String) {
-        when (nextActivity) {
-        }
-    }
+    private val helpClass = Helpers.instance
+    private var calendarDate = helpClass.getDatebyString(helpClass.getStringbyDate(Date()))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,35 +34,41 @@ class RecordOnRepair : AppCompatActivity(), RecordAddDialog.OnFragmentInteractio
         fab = findViewById<View>(R.id.activity_record_on_repair_button_add) as FloatingActionButton
         activityLabel.text = "Запись на ремонт ${Helpers.instance.getStringbyDate(Date(), "dd MMMM y")}"
         fab.setOnClickListener {
-            val manager = supportFragmentManager
-            val myDialogFragment = RecordAddDialog()
-            myDialogFragment.show(manager, "dialog")
+            val intent = Intent(this, RecordAddDialog::class.java)
+            startActivity(intent)
         }
+
+        val dp = resources.displayMetrics
+        recordsList.layoutParams.height = (dp.heightPixels - (dp.density * 400)).toInt()
+        calendar.layoutParams.height = (dp.density * 270).toInt()
+
         initServiceList()
-        updateRecordList(Date())
+        updateRecordList(helpClass.getDatebyString(helpClass.getStringbyDate(Date())))
         calendar.date = Date().time
         calendar.setOnDateChangeListener { calendarView: CalendarView, year: Int, month: Int, dateOfMonth: Int ->
             val dataFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-            val date = dataFormat.parse("$dateOfMonth.${month + 1}.$year")
-            updateRecordList(date)
-            activityLabel.text = "Запись на ремонт ${Helpers.instance.getStringbyDate(date, "dd MMMM y")}"
+            calendarDate = dataFormat.parse("$dateOfMonth.${month + 1}.$year")
+            updateRecordList(calendarDate)
+            activityLabel.text = "Запись на ремонт ${Helpers.instance.getStringbyDate(calendarDate, "dd MMMM y")}"
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateRecordList(calendarDate)
     }
 
     fun initServiceList() {
         val lm = LinearLayoutManager(this)
-        lm.stackFromEnd = true
+        //lm.stackFromEnd = true
         recordsList.layoutManager = lm
         recordsList.adapter = recordsAdapter
-
     }
 
-    private fun addRecord() {
-
-    }
 
     private fun updateRecordList(date: Date) {
         App.instance.dataControl.getRecords(date)
         recordsAdapter.update()
+        recordsList.smoothScrollToPosition(if (helpClass.record.isEmpty()) 0 else (helpClass.record.size - 1))
     }
 }

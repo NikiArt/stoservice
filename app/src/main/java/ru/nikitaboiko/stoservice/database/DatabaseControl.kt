@@ -244,7 +244,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         val req = makeRequirement("", startDate, endDate)
 
 
-        val cursor = App.instance.database.query(RECORD_TABLE_NAME, null, req, null, null, null, null)
+        val cursor = App.instance.database.query(RECORD_TABLE_NAME, null, req, null, null, null, DATE)
         cursor?.moveToFirst()
         if (!cursor.isAfterLast) {
             do {
@@ -305,8 +305,11 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     private fun makeRequirement(user: String, startDate: Date? = null, endDate: Date? = null): String? {
         var period =
             if (startDate == null) "" else "DATE >= '${(startDate.time / 1000)}'"
-        if (!period.isEmpty() && endDate != null) {
-            period += " AND  DATE <= '${(endDate.time / 1000)}'"
+        if (endDate != null) {
+            if (!period.isEmpty()) {
+                period += " AND "
+            }
+            period += "DATE <= '${(endDate.time / 1000)}'"
         }
         val userText = if (user.isEmpty()) "" else "USER = '${findUserId(user)}'"
         val req =

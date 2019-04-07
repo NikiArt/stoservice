@@ -1,60 +1,74 @@
 package ru.nikitaboiko.stoservice.fragments
 
-import android.app.Dialog
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_record_add.view.*
+import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.R
 import ru.nikitaboiko.stoservice.structure.Helpers
 import ru.nikitaboiko.stoservice.structure.Record
 import java.util.*
 
-class RecordAddDialog : DialogFragment() {
+class RecordAddDialog : AppCompatActivity(), DateDialog.OnFragmentInteractionListener,
+    TimeDialog.OnFragmentInteractionListener {
+
     lateinit var car: EditText
     lateinit var client: EditText
     lateinit var telephone: EditText
     lateinit var comment: EditText
     lateinit var dateRec: TextView
 
-    private lateinit var listener: OnFragmentInteractionListener
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val cont = context ?: return super.onCreateDialog(savedInstanceState)
-        val activ = activity ?: return super.onCreateDialog(savedInstanceState)
-
-        if (cont is OnFragmentInteractionListener) {
-            listener = cont
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+    override fun onFragmentInteraction(nextActivity: String, unit: String) {
+        when (nextActivity) {
+            "SetDate" -> {
+                dateRec.text = unit
+                val manager = supportFragmentManager
+                val myDialogFragment = TimeDialog()
+                myDialogFragment.show(manager, "dialog")
+            }
+            "SetTime" -> {
+                dateRec.text = "${dateRec.text} $unit"
+            }
         }
-        val builder = AlertDialog.Builder(cont)
-        val inflater = activ.layoutInflater
-        val inflatedView = inflater.inflate(R.layout.fragment_record_add, null)
-        builder.setView(inflatedView)
-        val buttonAdd = inflatedView.fragment_record_add_button_ok
-        car = inflatedView.fragment_record_add_car
-        client = inflatedView.fragment_record_add_client
-        telephone = inflatedView.fragment_record_add_telephone
-        comment = inflatedView.fragment_record_add_comment
-        dateRec = inflatedView.fragment_record_add_date
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.fragment_record_add)
+        val buttonAdd = findViewById<View>(R.id.fragment_record_add_button_ok)
+        car = findViewById<View>(R.id.fragment_record_add_car) as EditText
+        client = findViewById<View>(R.id.fragment_record_add_client) as EditText
+        telephone = findViewById<View>(R.id.fragment_record_add_telephone) as EditText
+        comment = findViewById<View>(R.id.fragment_record_add_comment) as EditText
+        dateRec = findViewById<View>(R.id.fragment_record_add_date) as TextView
 
         val modDate = (Date().time + 1000 * 60 * 60)
         dateRec.text = Helpers.instance.getStringbyDate(Date(modDate), "dd MMMM y HH:00")
         buttonAdd.setOnClickListener {
-            addService()
+            addRecord()
         }
 
-        return builder.create()
+        dateRec.setOnClickListener {
+            chooseDate()
+        }
     }
 
-    private fun addService() {
+    private fun chooseDate() {
+        val manager = supportFragmentManager
+        val myDialogFragment = DateDialog()
+        val bundle = Bundle()
+        bundle.putString("startDate", dateRec.text.toString())
+        myDialogFragment.arguments = bundle
+        myDialogFragment.show(manager, "dialog")
+    }
+
+    private fun addRecord() {
         if (car.text.toString().isEmpty()) {
-            Toast.makeText(context, "Необходимо указать информацию по автомобилю", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Необходимо указать информацию по автомобилю", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -70,11 +84,6 @@ class RecordAddDialog : DialogFragment() {
         )
         App.instance().dataControl.addRecord(currentRecord)
         Helpers.instance.record.add(currentRecord)
-        listener.onFragmentInteraction("UpdateRecords", "")
-        dismiss()
-    }
-
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(currentActivity: String, unit: String)
+        finish()
     }
 }

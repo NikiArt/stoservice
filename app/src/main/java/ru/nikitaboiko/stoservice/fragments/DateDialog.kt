@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
+import ru.nikitaboiko.stoservice.structure.Helpers
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,6 +18,7 @@ class DateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = arguments
         val incomingDate = bundle?.getString("startDate") ?: ""
+        val maxDate = bundle?.getString("maxDate") ?: ""
         listener = context as OnFragmentInteractionListener
         startDate = sdf.parse(incomingDate)
         val c = Calendar.getInstance()
@@ -26,7 +28,12 @@ class DateDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(getActivity(), this, year, month, day)
-        dpd.datePicker.maxDate = Date().time - 1000 * 60 * 60 * 24
+        if (!maxDate.isEmpty()) {
+            val c = Calendar.getInstance()
+            c.time = Helpers.instance.getDatebyString(maxDate)
+            c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 1)
+            dpd.datePicker.maxDate = c.time.time - 1000
+        }
 
         // Create a new instance of DatePickerDialog and return it
         return dpd

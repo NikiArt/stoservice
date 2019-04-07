@@ -21,6 +21,7 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
     private lateinit var user: String
     lateinit var serviceList: RecyclerView
     val servicesAdapter = UserServiceAdapter()
+    val helpClass = Helpers.instance
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
@@ -110,6 +111,7 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         val myDialogFragment = DateDialog()
         val bundle = Bundle()
         bundle.putString("startDate", priceDate.text.toString())
+        bundle.putString("maxDate", helpClass.getStringbyDate(Date()))
         myDialogFragment.arguments = bundle
         myDialogFragment.show(manager, "dialog")
     }
