@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ru.nikitaboiko.stoservice.fragments.DeleteListDialog
 import ru.nikitaboiko.stoservice.fragments.RecordAddDialog
-import ru.nikitaboiko.stoservice.fragments.RecordDeleteDialog
 import ru.nikitaboiko.stoservice.fragments.adapter.RecordServiceAdapter
 import ru.nikitaboiko.stoservice.structure.Helpers
 import java.text.SimpleDateFormat
@@ -18,7 +18,7 @@ import java.util.*
 
 
 class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInteractionListener,
-    RecordDeleteDialog.OnFragmentInteractionListener {
+    DeleteListDialog.OnFragmentInteractionListener {
     private lateinit var calendar: CalendarView
     private lateinit var fab: FloatingActionButton
     private lateinit var activityLabel: TextView
@@ -31,9 +31,12 @@ class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInter
         when (currentActivity) {
             "deleteRecord" -> {
                 val manager = supportFragmentManager
-                val myDialogFragment = RecordDeleteDialog()
+                val myDialogFragment = DeleteListDialog()
                 val bundle = Bundle()
-                bundle.putInt("recordId", unit)
+                bundle.putInt("Id", unit)
+                bundle.putString("title", "Удаление записи")
+                bundle.putString("message", "Вы действительно хотите удалить запись на ${helpClass.record[unit].date}?")
+                bundle.putString("listType", "recordList")
                 myDialogFragment.arguments = bundle
                 myDialogFragment.show(manager, "dialog")
             }

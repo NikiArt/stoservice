@@ -1,21 +1,25 @@
 package ru.nikitaboiko.stoservice
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
+import ru.nikitaboiko.stoservice.fragments.DeleteListDialog
 import ru.nikitaboiko.stoservice.structure.Helpers
 
 
-class AdminUserList : AppCompatActivity(), AdapterView.OnItemLongClickListener {
+class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractionListener {
     private lateinit var mAdapter: ArrayAdapter<String>
+
+    override fun onFragmentInteraction(currentActivity: String, unit: Int) {
+        when (currentActivity) {
+            "updateList" -> {
+                updateList()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         App.instance.dataControl.getUserList()
@@ -32,52 +36,17 @@ class AdminUserList : AppCompatActivity(), AdapterView.OnItemLongClickListener {
         listView.adapter = mAdapter
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             val manager = supportFragmentManager
-            val myDialogFragment = UserDeleteDialog()
+            val myDialogFragment = DeleteListDialog()
+            val user = Helpers.instance.userList[position]
             val bundle = Bundle()
-            bundle.putInt("userId", position)
+            bundle.putInt("Id", position)
+            bundle.putString("title", "Удаление пользователя")
+            bundle.putString("message", "Вы действительно хотите удалить $user?")
+            bundle.putString("listType", "userList")
             myDialogFragment.arguments = bundle
             myDialogFragment.show(manager, "dialog")
         }
 
-    }
-
-
-    override fun onItemLongClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long): Boolean {
-        Toast.makeText(
-            baseContext,
-            "Введите пароль",
-            Toast.LENGTH_SHORT
-        ).show()
-        val manager = supportFragmentManager
-        val myDialogFragment = UserDeleteDialog()
-        val bundle = Bundle()
-        bundle.putInt("userId", position)
-        myDialogFragment.arguments = bundle
-        myDialogFragment.show(manager, "dialog")
-        return true
-    }
-
-    class UserDeleteDialog : DialogFragment() {
-
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val bundle = arguments
-            val user = Helpers.instance.userList[bundle?.getInt("userId") ?: 0]
-            val title = "Удаление gjkmpjdfntkz"
-            val message = "Вы действительно хотите удалить $user?"
-            val button1String = "Удалить"
-            val button2String = "Отмена"
-            val builder = AlertDialog.Builder(context!!)
-            builder.setTitle(title)  // заголовок
-            builder.setMessage(message) // сообщение
-            builder.setPositiveButton(button1String) { dialog, id ->
-                App.instance.dataControl.deleteUser(user)
-            }
-            builder.setNegativeButton(button2String) { dialog, id ->
-                dismiss()
-            }
-            builder.setCancelable(true)
-            return builder.create()
-        }
     }
 
     fun updateList() {

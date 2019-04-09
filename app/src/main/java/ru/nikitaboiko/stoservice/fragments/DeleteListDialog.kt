@@ -6,27 +6,32 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikitaboiko.stoservice.App
 import ru.nikitaboiko.stoservice.structure.Helpers
-import ru.nikitaboiko.stoservice.structure.Record
 
-class RecordDeleteDialog : DialogFragment() {
+class DeleteListDialog : DialogFragment() {
     val helpClass = Helpers.instance
-    lateinit var record: Record
     private lateinit var listener: OnFragmentInteractionListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bundle = arguments
-        record = helpClass.record[bundle?.getInt("recordId") ?: 0]
-        val title = "Удаление записи"
-        val message = "Вы действительно хотите удалить запись на ${record.date}?"
+        val title = bundle?.getString("title") ?: ""
+        val message = bundle?.getString("message") ?: ""
         val button1String = "Удалить"
         val button2String = "Отмена"
+
         listener = context as OnFragmentInteractionListener
 
         val builder = AlertDialog.Builder(context!!)
         builder.setTitle(title)  // заголовок
         builder.setMessage(message) // сообщение
         builder.setPositiveButton(button1String) { dialog, id ->
-            App.instance.dataControl.deleteRecord(record)
+            when (bundle?.getString("listType")) {
+                "userList" -> {
+                    App.instance.dataControl.deleteUser(helpClass.userList[bundle?.getInt("Id") ?: 0])
+                }
+                else -> {
+                    App.instance.dataControl.deleteRecord(helpClass.record[bundle?.getInt("Id") ?: 0])
+                }
+            }
             listener.onFragmentInteraction("updateList", 0)
         }
         builder.setNegativeButton(button2String) { dialog, id ->

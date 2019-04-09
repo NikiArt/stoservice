@@ -13,8 +13,8 @@ class UserListDialog : DialogFragment() {
     private lateinit var listener: OnFragmentInteractionListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        App.instance().dataControl
-        var users = Helpers.instance.userList.toTypedArray().sortedArray()
+        App.instance().dataControl.getUserList()
+        var users = Helpers.instance.userList.toTypedArray()
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
 
         if (cont is OnFragmentInteractionListener) {

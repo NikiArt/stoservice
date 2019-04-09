@@ -170,6 +170,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                 userList.add(cursor.getString(1))
             } while (cursor.moveToNext())
         }
+        userList.sort()
     }
 
     fun passIsCorrect(user: String, password: String): Boolean {
