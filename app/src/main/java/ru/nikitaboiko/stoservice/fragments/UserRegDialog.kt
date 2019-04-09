@@ -2,6 +2,7 @@ package ru.nikitaboiko.stoservice.fragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -13,11 +14,15 @@ import ru.nikitaboiko.stoservice.structure.Helpers
 
 
 class UserRegDialog : DialogFragment() {
-    lateinit var login: TextView
-    lateinit var password: TextView
-    lateinit var passwordRepeat: TextView
+    lateinit var login: EditText
+    lateinit var password: EditText
+    lateinit var passwordRepeat: EditText
+    lateinit var label: TextView
+    lateinit var username: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bundle = arguments
+        username = bundle?.getString("user") ?: ""
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
         val activ = activity ?: return super.onCreateDialog(savedInstanceState)
         val builder = AlertDialog.Builder(cont)
@@ -28,12 +33,25 @@ class UserRegDialog : DialogFragment() {
         login = inflatedView.fragment_user_reg_login
         password = inflatedView.fragment_user_reg_password
         passwordRepeat = inflatedView.fragment_user_reg_password_repeat
+        label = inflatedView.fragment_user_reg_label
 
         buttonAdd.setOnClickListener {
             addUser()
         }
 
+        if (username.equals("Администратор")) {
+            initAdminReg()
+        }
+
         return builder.create()
+    }
+
+    private fun initAdminReg() {
+        login.text.append("Администратор")
+        login.isEnabled = false
+        login.isCursorVisible = false
+        login.keyListener = null
+        label.text = "При первом запуске необходимо задать пароль администратора"
     }
 
     private fun addUser() {
@@ -76,5 +94,4 @@ class UserRegDialog : DialogFragment() {
             ).show()
         }
     }
-
 }

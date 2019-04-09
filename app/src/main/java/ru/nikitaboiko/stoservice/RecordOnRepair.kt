@@ -59,7 +59,7 @@ class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInter
 
         val dp = resources.displayMetrics
         recordsList.layoutParams.height = (dp.heightPixels - (dp.density * 400)).toInt()
-        calendar.layoutParams.height = (dp.density * 270).toInt()
+        calendar.layoutParams.height = (dp.density * 280).toInt()
 
         initServiceList()
         updateRecordList(helpClass.getDatebyString(helpClass.getStringbyDate(Date())))

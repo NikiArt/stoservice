@@ -5,8 +5,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Helpers {
-    var servicesList = ArrayList<Service>()
-    var record = ArrayList<Record>()
+    val servicesList = ArrayList<Service>()
+    val record = ArrayList<Record>()
+    val userList = ArrayList<String>()
 
     private object Holder {
         val INSTANCE = Helpers()

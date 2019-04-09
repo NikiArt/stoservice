@@ -13,7 +13,6 @@ import ru.nikitaboiko.stoservice.structure.Pay
 import ru.nikitaboiko.stoservice.structure.Record
 import ru.nikitaboiko.stoservice.structure.Service
 import java.util.*
-import kotlin.collections.ArrayList
 
 class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) :
     SQLiteOpenHelper(context, name, factory, version) {
@@ -161,8 +160,9 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
 
-    fun getUserList(): ArrayList<String> {
-        val userList = ArrayList<String>()
+    fun getUserList() {
+        val userList = Helpers.instance.userList
+        userList.clear()
         val cursor = App.instance().database.query(USERS_TABLE_NAME, null, null, null, null, null, null)
         cursor?.moveToFirst()
         if (cursor != null && !cursor.isAfterLast) {
@@ -170,7 +170,6 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                 userList.add(cursor.getString(1))
             } while (cursor.moveToNext())
         }
-        return userList
     }
 
     fun passIsCorrect(user: String, password: String): Boolean {

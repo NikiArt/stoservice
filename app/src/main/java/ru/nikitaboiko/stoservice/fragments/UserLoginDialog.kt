@@ -24,11 +24,7 @@ class UserLoginDialog : DialogFragment() {
         username = bundle?.getString("user") ?: ""
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
         val activ = activity ?: return super.onCreateDialog(savedInstanceState)
-        if (cont is UserLoginDialog.OnFragmentInteractionListener) {
-            listener = cont
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
+        listener = cont as OnFragmentInteractionListener
         val builder = AlertDialog.Builder(cont)
         val inflater = activ.layoutInflater
         val inflatedView = inflater.inflate(R.layout.fragment_user_login, null)
@@ -51,7 +47,7 @@ class UserLoginDialog : DialogFragment() {
 
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(currentActivity: String, unit: String)
+        fun onFragmentInteraction(nextActivity: String, unit: String)
     }
 
     private fun checkPass(activ: Activity) {
@@ -64,7 +60,7 @@ class UserLoginDialog : DialogFragment() {
             return
         }
         if (App.instance().dataControl.passIsCorrect(username, Helpers().delSpaces(password.editableText.toString()))) {
-            listener?.onFragmentInteraction("Workflow", username)
+            listener.onFragmentInteraction(if (username.equals("Администратор")) "AdminPanel" else "Workflow", username)
             dismiss()
         }
     }
