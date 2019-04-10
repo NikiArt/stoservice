@@ -27,15 +27,18 @@ class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInter
     private val helpClass = Helpers.instance
     private var calendarDate = helpClass.getDatebyString(helpClass.getStringbyDate(Date()))
 
-    override fun onFragmentInteraction(currentActivity: String, unit: Int) {
+    override fun onFragmentInteraction(currentActivity: String, unit: String) {
         when (currentActivity) {
             "deleteRecord" -> {
                 val manager = supportFragmentManager
                 val myDialogFragment = DeleteListDialog()
                 val bundle = Bundle()
-                bundle.putInt("Id", unit)
+                bundle.putInt("Id", unit.toInt())
                 bundle.putString("title", "Удаление записи")
-                bundle.putString("message", "Вы действительно хотите удалить запись на ${helpClass.record[unit].date}?")
+                bundle.putString(
+                    "message",
+                    "Вы действительно хотите удалить запись на ${helpClass.record[unit.toInt()].date}?"
+                )
                 bundle.putString("listType", "recordList")
                 myDialogFragment.arguments = bundle
                 myDialogFragment.show(manager, "dialog")
@@ -57,6 +60,7 @@ class RecordOnRepair : AppCompatActivity(), RecordServiceAdapter.OnFragmentInter
         recordsAdapter.setLongClickListener(this)
         fab.setOnClickListener {
             val intent = Intent(this, RecordAddDialog::class.java)
+            intent.putExtra("date", helpClass.getStringbyDate(calendarDate))
             startActivity(intent)
         }
 

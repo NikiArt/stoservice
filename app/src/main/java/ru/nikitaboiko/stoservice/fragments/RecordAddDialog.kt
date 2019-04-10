@@ -47,8 +47,7 @@ class RecordAddDialog : AppCompatActivity(), DateDialog.OnFragmentInteractionLis
         comment = findViewById<View>(R.id.fragment_record_add_comment) as EditText
         dateRec = findViewById<View>(R.id.fragment_record_add_date) as TextView
 
-        val modDate = (Date().time + 1000 * 60 * 60)
-        dateRec.text = Helpers.instance.getStringbyDate(Date(modDate), "dd MMMM y HH:00")
+        dateRec.text = "${intent.extras.get("date")} 00:00"
         shadowDate = dateRec.text.toString()
         buttonAdd.setOnClickListener {
             addRecord()

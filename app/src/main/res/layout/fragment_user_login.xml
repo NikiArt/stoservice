@@ -28,6 +28,7 @@
     <Button
             android:text="Войти"
             android:layout_width="96dp"
+            android:background="@drawable/buttons_style"
             android:layout_height="wrap_content"
             android:id="@+id/fragment_user_login_button_ok"/>
 </LinearLayout>

@@ -10,7 +10,7 @@ import ru.nikitaboiko.stoservice.fragments.UserRegDialog
 
 
 class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionListener,
-    UserListDialog.OnFragmentInteractionListener {
+    UserListDialog.OnFragmentInteractionListener, UserRegDialog.OnFragmentInteractionListener {
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
@@ -39,16 +39,10 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val userRegButton = findViewById<View>(R.id.activity_main_button_user_reg)
         val userList = findViewById<View>(R.id.activity_main_button_user_list)
         val records = findViewById<View>(R.id.activity_main_button_records)
         val admin = findViewById<View>(R.id.activity_main_button_admin)
         checkAdmin()
-        userRegButton.setOnClickListener {
-            val manager = supportFragmentManager
-            val myDialogFragment = UserRegDialog()
-            myDialogFragment.show(manager, "dialog")
-        }
 
         userList.setOnClickListener {
             val manager = supportFragmentManager
@@ -78,7 +72,7 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
             val manager = supportFragmentManager
             val myDialogFragment = UserRegDialog()
             val bundle = Bundle()
-            bundle.putString("user", "Администратор")
+            bundle.putString("username", "Администратор")
             myDialogFragment.arguments = bundle
             myDialogFragment.show(manager, "dialog")
             return false

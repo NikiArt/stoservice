@@ -2,18 +2,22 @@ package ru.nikitaboiko.stoservice
 
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import ru.nikitaboiko.stoservice.fragments.DeleteListDialog
+import ru.nikitaboiko.stoservice.fragments.UserRegDialog
 import ru.nikitaboiko.stoservice.structure.Helpers
 
 
-class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractionListener {
+class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractionListener,
+    UserRegDialog.OnFragmentInteractionListener {
     private lateinit var mAdapter: ArrayAdapter<String>
+    val manager = supportFragmentManager
 
-    override fun onFragmentInteraction(currentActivity: String, unit: Int) {
+    override fun onFragmentInteraction(currentActivity: String, unit: String) {
         when (currentActivity) {
             "updateList" -> {
                 updateList()
@@ -35,7 +39,14 @@ class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractio
         )
         listView.adapter = mAdapter
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            val manager = supportFragmentManager
+            val myDialogFragment = UserRegDialog()
+            val bundle = Bundle()
+            bundle.putString("username", Helpers.instance.userList[position])
+            myDialogFragment.arguments = bundle
+            myDialogFragment.show(manager, "dialog")
+        }
+
+        listView.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
             val myDialogFragment = DeleteListDialog()
             val user = Helpers.instance.userList[position]
             val bundle = Bundle()
@@ -44,6 +55,12 @@ class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractio
             bundle.putString("message", "Вы действительно хотите удалить $user?")
             bundle.putString("listType", "userList")
             myDialogFragment.arguments = bundle
+            myDialogFragment.show(manager, "dialog")
+            true
+        }
+
+        addButton.setOnClickListener {
+            val myDialogFragment = UserRegDialog()
             myDialogFragment.show(manager, "dialog")
         }
 

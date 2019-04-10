@@ -8,10 +8,7 @@ import android.widget.Toast
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import ru.nikitaboiko.stoservice.App
-import ru.nikitaboiko.stoservice.structure.Helpers
-import ru.nikitaboiko.stoservice.structure.Pay
-import ru.nikitaboiko.stoservice.structure.Record
-import ru.nikitaboiko.stoservice.structure.Service
+import ru.nikitaboiko.stoservice.structure.*
 import java.util.*
 
 class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int) :
@@ -81,6 +78,16 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         }
     }
 
+    fun modifyUser(user: User) {
+        val values = ContentValues()
+        values.put(USER, user.login)
+        if (!user.password.isEmpty()) {
+            values.put(PASSWORD, md5Hex(user.password))
+        }
+        App.instance().database.update(USERS_TABLE_NAME, values, "ID = '${user.id}'", null)
+        Toast.makeText(App.instance().baseContext, "Пользователь ${user.login} изменен", Toast.LENGTH_LONG).show()
+    }
+
     fun findUserId(user: String): String? {
         val cursor = App.instance().database.query(
             USERS_TABLE_NAME,
@@ -99,7 +106,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         }
     }
 
-    fun getUser(userId: String): String {
+    fun getUsername(userId: String): String {
         val cursor = App.instance().database.query(
             USERS_TABLE_NAME,
             null,
@@ -114,6 +121,29 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             cursor.getString(1)
         } else {
             ""
+        }
+    }
+
+    fun getUser(userId: String): User? {
+        val cursor = App.instance().database.query(
+            USERS_TABLE_NAME,
+            null,
+            "UPPER($ID) = '${userId.toUpperCase()}'",
+            null,
+            null,
+            null,
+            null
+        )
+        cursor?.moveToFirst()
+        return if (cursor != null && !cursor.isAfterLast) {
+            return User(
+                cursor.getString(0),
+                cursor.getString(1),
+                cursor.getString(2)
+            )
+
+        } else {
+            null
         }
     }
 
@@ -225,7 +255,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                     cursor.getString(0),
                     cursor.getString(1),
                     cursor.getString(2),
-                    getUser(cursor.getString(3)),
+                    getUsername(cursor.getString(3)),
                     cursor.getDouble(4),
                     Date(cursor.getLong(5) * 1000),
                     status

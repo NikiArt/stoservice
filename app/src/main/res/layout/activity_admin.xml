@@ -14,10 +14,10 @@
             android:id="@+id/activity_admin_button_salary"
             android:textSize="22sp"
             android:background="@drawable/buttons_style"
-            android:layout_marginTop="100dp"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"/>
     <Button

@@ -43,7 +43,7 @@ class RecordServiceAdapter : RecyclerView.Adapter<RecordServiceAdapter.MyViewHol
         holder.telephone.text = Helpers.instance.record[position].telephone
         holder.comment.text = Helpers.instance.record[position].comment
         holder.view.setOnLongClickListener {
-            listener.onFragmentInteraction("deleteRecord", position)
+            listener.onFragmentInteraction("deleteRecord", "$position")
             true
         }
     }
@@ -53,6 +53,6 @@ class RecordServiceAdapter : RecyclerView.Adapter<RecordServiceAdapter.MyViewHol
     }
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(currentActivity: String, unit: Int)
+        fun onFragmentInteraction(currentActivity: String, unit: String)
     }
 }

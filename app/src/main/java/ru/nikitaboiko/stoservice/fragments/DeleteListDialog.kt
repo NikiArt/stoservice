@@ -26,13 +26,13 @@ class DeleteListDialog : DialogFragment() {
         builder.setPositiveButton(button1String) { dialog, id ->
             when (bundle?.getString("listType")) {
                 "userList" -> {
-                    App.instance.dataControl.deleteUser(helpClass.userList[bundle?.getInt("Id") ?: 0])
+                    App.instance.dataControl.deleteUser(helpClass.userList[bundle.getInt("Id")])
                 }
                 else -> {
                     App.instance.dataControl.deleteRecord(helpClass.record[bundle?.getInt("Id") ?: 0])
                 }
             }
-            listener.onFragmentInteraction("updateList", 0)
+            listener.onFragmentInteraction("updateList", "")
         }
         builder.setNegativeButton(button2String) { dialog, id ->
             dismiss()
@@ -42,6 +42,6 @@ class DeleteListDialog : DialogFragment() {
     }
 
     interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(currentActivity: String, unit: Int)
+        fun onFragmentInteraction(currentActivity: String, unit: String)
     }
 }
