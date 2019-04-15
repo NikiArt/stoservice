@@ -19,6 +19,11 @@ class AdminActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        worksButton.setOnClickListener {
+            val intent = Intent(this, AdminOrdersList::class.java)
+            startActivity(intent)
+        }
+
         usersButton.setOnClickListener {
             val intent = Intent(this, AdminUserList::class.java)
             startActivity(intent)

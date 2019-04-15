@@ -28,6 +28,9 @@ class DeleteListDialog : DialogFragment() {
                 "userList" -> {
                     App.instance.dataControl.deleteUser(helpClass.userList[bundle.getInt("Id")])
                 }
+                "salaryList" -> {
+                    App.instance.dataControl.deletePay(helpClass.salaryList[bundle.getInt("Id")])
+                }
                 else -> {
                     App.instance.dataControl.deleteRecord(helpClass.record[bundle?.getInt("Id") ?: 0])
                 }

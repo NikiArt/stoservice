@@ -40,7 +40,7 @@ class AdminSalaryAdapter : RecyclerView.Adapter<AdminSalaryAdapter.MyViewHolder>
         holder.amount.text = Helpers.instance.salaryList[position].price.toString() + "\u20BD"
         holder.comment.text = Helpers.instance.salaryList[position].comment
         holder.view.setOnLongClickListener {
-            listener.onFragmentInteraction("deleteRecord", "$position")
+            listener.onFragmentInteraction("deleteSalary", "$position")
             true
         }
     }

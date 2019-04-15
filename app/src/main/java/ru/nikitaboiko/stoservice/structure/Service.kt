@@ -9,5 +9,5 @@ class Service(
     val user: String,
     val price: Double,
     val date: Date,
-    val done: Boolean = false
+    var done: Boolean = false
 )

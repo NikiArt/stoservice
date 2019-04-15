@@ -160,6 +160,17 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         Toast.makeText(App.instance().baseContext, "Текущие работы успешно сохранены", Toast.LENGTH_LONG).show()
     }
 
+    fun modifyService(service: Service) {
+        val values = ContentValues()
+        values.put(CAR, service.car)
+        values.put(SERVICE, service.service)
+        values.put(USER, findUserId(service.user))
+        values.put(PRICE, service.price)
+        values.put(DATE, (service.date.time / 1000))
+        values.put(DONE, service.done)
+        App.instance().database.update(SERVICE_TABLE_NAME, values, "ID = '${service.id}'", null)
+    }
+
     fun addRecord(record: Record) {
         val values = ContentValues()
         values.put(ID, record.id)
@@ -343,9 +354,15 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         Toast.makeText(App.instance().baseContext, "Пользователь $user удален", Toast.LENGTH_LONG).show()
     }
 
-    fun getTotalAmount(user: String = "", startDate: Date? = null): Double {
+    fun getTotalAmount(user: String = "", startDate: Date? = null, done: Boolean = false): Double {
         var totalAmount = 0.0
-        val req = makeRequirement(user, startDate)
+        var req = makeRequirement(user, startDate)
+        if (done) {
+            if (req != null && !req.isEmpty()) {
+                req += " AND "
+            }
+            req += "$DONE = '1'"
+        }
 
         val cursor = App.instance().database.query(
             SERVICE_TABLE_NAME,

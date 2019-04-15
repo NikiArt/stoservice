@@ -42,7 +42,8 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         var currentAmount =
             App.instance().dataControl.getTotalAmount(
                 user,
-                Helpers.instance.getDatebyString(priceDate.text.toString())
+                Helpers.instance.getDatebyString(priceDate.text.toString()),
+                true
             ) * 0.4
         currentAmount = Math.rint(100.0 * currentAmount) / 100.0
         var currentSalary =
@@ -51,7 +52,7 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
         amount.text = "Заработано за период: $currentAmount \u20BD"
         salary.text = "Получено за период: $currentSalary \u20BD"
-        totalSalary.text = "${currentAmount - currentSalary} \u20BD"
+        totalSalary.text = "${(Math.rint(100.0 * (currentAmount - currentSalary)) / 100.0)} \u20BD"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
