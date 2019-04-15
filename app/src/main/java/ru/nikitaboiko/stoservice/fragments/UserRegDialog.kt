@@ -96,6 +96,14 @@ class UserRegDialog : DialogFragment() {
             val locLogin = Helpers().delSpaces(login.text.toString(), false)
             val locPassword = Helpers().delSpaces(password.text.toString())
             if (user != null) {
+                if (App.instance.dataControl.findUserId(locLogin) != null) {
+                    Toast.makeText(
+                        App.instance().baseContext,
+                        "Имя пользователя должно быть уникально",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return
+                }
                 user.login = locLogin
                 user.password = locPassword
                 val id = App.instance().dataControl.modifyUser(user)
