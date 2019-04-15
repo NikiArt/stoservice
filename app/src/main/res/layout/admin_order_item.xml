@@ -58,12 +58,11 @@
                 android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/space2"/>
         <CheckBox
-                android:text="Ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/admin_order_item_done" app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/admin_order_item_price"
                 android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/admin_order_item_work"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
