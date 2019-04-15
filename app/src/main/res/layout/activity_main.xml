@@ -30,7 +30,7 @@
                 app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
                 android:layout_marginBottom="60dp" app:layout_constraintBottom_toBottomOf="parent"/>
         <Button
-                android:text="Список пользователей"
+                android:text="Сотрудники"
                 android:layout_width="wrap_content"
                 android:background="@drawable/buttons_style"
                 android:layout_height="wrap_content" android:id="@+id/activity_main_button_user_list"

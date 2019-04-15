@@ -75,7 +75,7 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
 
         val dp = resources.displayMetrics
-        serviceList.layoutParams.height = (dp.heightPixels - (dp.density * 400)).toInt()
+        serviceList.layoutParams.height = (dp.heightPixels - (dp.density * 420)).toInt()
 
         priceDate.text = Helpers().getStringbyDate(Date(), "01 MMMM y")
         priceDate.setOnClickListener {

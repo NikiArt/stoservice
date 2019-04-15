@@ -14,6 +14,11 @@ class AdminActivity : AppCompatActivity() {
         val worksButton = findViewById<View>(R.id.activity_admin_button_works)
         val usersButton = findViewById<View>(R.id.activity_admin_button_users)
 
+        salaryButton.setOnClickListener {
+            val intent = Intent(this, AdminSalaryList::class.java)
+            startActivity(intent)
+        }
+
         usersButton.setOnClickListener {
             val intent = Intent(this, AdminUserList::class.java)
             startActivity(intent)

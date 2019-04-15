@@ -8,6 +8,7 @@ class Helpers {
     val servicesList = ArrayList<Service>()
     val record = ArrayList<Record>()
     val userList = ArrayList<String>()
+    val salaryList = ArrayList<Pay>()
 
     private object Holder {
         val INSTANCE = Helpers()

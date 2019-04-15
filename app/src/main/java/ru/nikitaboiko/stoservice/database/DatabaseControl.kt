@@ -110,7 +110,7 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         val cursor = App.instance().database.query(
             USERS_TABLE_NAME,
             null,
-            "UPPER($USER) = '${userId.toUpperCase()}'",
+            "UPPER($ID) = '${userId.toUpperCase()}'",
             null,
             null,
             null,
@@ -174,18 +174,19 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
             .show()
     }
 
-    fun addPay(user: String, price: Double) {
+    fun addPay(pay: Pay) {
         val values = ContentValues()
         val id = UUID.randomUUID().toString()
         values.put(ID, id)
-        values.put(USER, findUserId(user))
-        values.put(DATE, Date().toString())
-        values.put(PRICE, price)
+        values.put(USER, findUserId(pay.user))
+        values.put(DATE, (pay.date.time / 1000))
+        values.put(PRICE, pay.price)
+        values.put(COMMENT, pay.comment)
         App.instance().database.insert(PAY_TABLE_NAME, null, values)
         Toast.makeText(
             App.instance().baseContext,
-            "Выдача денежных средств сотруднику $user в размере $price руб. зафиксирована успешно",
-            Toast.LENGTH_LONG
+            "Выдача денежных средств сотруднику ${pay.user} в размере ${pay.price} руб. зафиксирована успешно",
+            Toast.LENGTH_SHORT
         ).show()
     }
 
@@ -289,6 +290,28 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
                     cursor.getString(6)
                 )
                 registration.add(record)
+            } while (cursor.moveToNext())
+        }
+
+
+    }
+
+    fun getSalaries() {
+        val salaryList = Helpers.instance.salaryList
+        salaryList.clear()
+
+        val cursor = App.instance.database.query(PAY_TABLE_NAME, null, null, null, null, null, DATE)
+        cursor?.moveToFirst()
+        if (!cursor.isAfterLast) {
+            do {
+                val pay = Pay(
+                    cursor.getString(0),
+                    getUsername(cursor.getString(1)),
+                    Date(cursor.getLong(2) * 1000),
+                    cursor.getDouble(3),
+                    cursor.getString(4) ?: ""
+                )
+                salaryList.add(pay)
             } while (cursor.moveToNext())
         }
 
