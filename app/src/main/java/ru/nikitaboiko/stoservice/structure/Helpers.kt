@@ -10,6 +10,8 @@ class Helpers {
     val userList = ArrayList<String>()
     val salaryList = ArrayList<Pay>()
 
+    val calendar = Calendar.getInstance()
+
     private object Holder {
         val INSTANCE = Helpers()
     }
@@ -51,5 +53,21 @@ class Helpers {
     fun getStringbyDate(date: Date, format: String = "dd MMMM y"): String {
         val sdf = SimpleDateFormat(format, Locale.getDefault())
         return sdf.format(date)
+    }
+
+    fun getStartDay(date: Date): Date {
+        calendar.time = date
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        return calendar.time
+    }
+
+    fun getEndDay(date: Date): Date {
+        calendar.time = date
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+        return calendar.time
     }
 }

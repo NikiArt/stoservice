@@ -23,6 +23,8 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
     lateinit var serviceList: RecyclerView
     val servicesAdapter = UserServiceAdapter()
     val helpClass = Helpers.instance
+    private lateinit var startDayDate: Date
+    private lateinit var endDayDate: Date
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
@@ -43,20 +45,22 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
     }
 
     private fun updateAmounts() {
+        startDayDate = Helpers.instance.getStartDay(Helpers.instance.getDatebyString(priceDateStart.text.toString()))
+        endDayDate = Helpers.instance.getEndDay(Helpers.instance.getDatebyString(priceDateEnd.text.toString()))
 
         var currentAmount =
             App.instance().dataControl.getTotalAmount(
                 user,
-                Helpers.instance.getDatebyString(priceDateStart.text.toString()),
-                Helpers.instance.getDatebyString(priceDateEnd.text.toString()),
+                startDayDate,
+                endDayDate,
                 true
             ) * 0.4
         currentAmount = Math.rint(100.0 * currentAmount) / 100.0
         var currentSalary =
             App.instance().dataControl.getTotalSalary(
                 user,
-                Helpers.instance.getDatebyString(priceDateStart.text.toString()),
-                Helpers.instance.getDatebyString(priceDateEnd.text.toString())
+                startDayDate,
+                endDayDate
             )
         currentSalary = Math.rint(100.0 * currentSalary) / 100.0
 
