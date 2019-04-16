@@ -14,7 +14,8 @@ import java.util.*
 
 class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionListener,
     ServiceAddDialog.OnFragmentInteractionListener {
-    private lateinit var priceDate: TextView
+    private lateinit var priceDateStart: TextView
+    private lateinit var priceDateEnd: TextView
     private lateinit var amount: TextView
     private lateinit var salary: TextView
     private lateinit var totalSalary: TextView
@@ -25,8 +26,12 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
-            "SetDate" -> {
-                priceDate.text = unit
+            "startSetDate" -> {
+                priceDateStart.text = unit
+                updateAmounts()
+            }
+            "endSetDate" -> {
+                priceDateEnd.text = unit
                 updateAmounts()
             }
             "UpdateServices" -> {
@@ -42,12 +47,17 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         var currentAmount =
             App.instance().dataControl.getTotalAmount(
                 user,
-                Helpers.instance.getDatebyString(priceDate.text.toString()),
+                Helpers.instance.getDatebyString(priceDateStart.text.toString()),
+                Helpers.instance.getDatebyString(priceDateEnd.text.toString()),
                 true
             ) * 0.4
         currentAmount = Math.rint(100.0 * currentAmount) / 100.0
         var currentSalary =
-            App.instance().dataControl.getTotalSalary(user, Helpers.instance.getDatebyString(priceDate.text.toString()))
+            App.instance().dataControl.getTotalSalary(
+                user,
+                Helpers.instance.getDatebyString(priceDateStart.text.toString()),
+                Helpers.instance.getDatebyString(priceDateEnd.text.toString())
+            )
         currentSalary = Math.rint(100.0 * currentSalary) / 100.0
 
         amount.text = "Заработано за период: $currentAmount \u20BD"
@@ -67,7 +77,8 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         val addWorkButton = findViewById<View>(R.id.activity_worker_button_addwork)
         amount = findViewById<View>(R.id.activity_worker_price_org) as TextView
         salary = findViewById<View>(R.id.activity_worker_price_worker) as TextView
-        priceDate = findViewById<View>(R.id.activity_worker_date_price) as TextView
+        priceDateStart = findViewById<View>(R.id.activity_worker_date_price_start) as TextView
+        priceDateEnd = findViewById<View>(R.id.activity_worker_date_price_end) as TextView
         totalSalary = findViewById<View>(R.id.activity_worker_total_salary) as TextView
         serviceList = findViewById<View>(R.id.activity_worker_list) as RecyclerView
         val footer = findViewById<View>(R.id.activity_worker_footer)
@@ -78,9 +89,14 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
         val dp = resources.displayMetrics
         serviceList.layoutParams.height = (dp.heightPixels - (dp.density * 420)).toInt()
 
-        priceDate.text = Helpers().getStringbyDate(Date(), "01 MMMM y")
-        priceDate.setOnClickListener {
-            openDateDialog()
+        priceDateStart.text = Helpers().getStringbyDate(Date(), "01 MMMM y")
+        priceDateStart.setOnClickListener {
+            openDateDialog("start")
+        }
+
+        priceDateEnd.text = Helpers().getStringbyDate(Date(), "dd MMMM y")
+        priceDateEnd.setOnClickListener {
+            openDateDialog("end")
         }
 
         initServiceList()
@@ -106,12 +122,27 @@ class WorkerActivity : AppCompatActivity(), DateDialog.OnFragmentInteractionList
 
     }
 
-    private fun openDateDialog() {
+    private fun openDateDialog(periodVal: String) {
         val manager = supportFragmentManager
         val myDialogFragment = DateDialog()
         val bundle = Bundle()
-        bundle.putString("startDate", priceDate.text.toString())
         bundle.putString("maxDate", helpClass.getStringbyDate(Date()))
+        if (periodVal.equals("start")) {
+            bundle.putString("startDate", priceDateStart.text.toString())
+            if (helpClass.getDatebyString(priceDateEnd.text.toString()) < helpClass.getDatebyString(
+                    helpClass.getStringbyDate(
+                        Date()
+                    )
+                )
+            ) {
+                bundle.putString("maxDate", priceDateEnd.text.toString())
+            }
+        } else {
+            bundle.putString("startDate", priceDateEnd.text.toString())
+            bundle.putString("minDate", priceDateStart.text.toString())
+        }
+
+        bundle.putString("periodVal", periodVal)
         myDialogFragment.arguments = bundle
         myDialogFragment.show(manager, "dialog")
     }

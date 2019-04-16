@@ -26,7 +26,7 @@ class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractio
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        App.instance.dataControl.getUserList()
+        App.instance.dataControl.getUserList(false)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_user_list)
 
@@ -67,7 +67,7 @@ class AdminUserList : AppCompatActivity(), DeleteListDialog.OnFragmentInteractio
     }
 
     fun updateList() {
-        App.instance.dataControl.getUserList()
+        App.instance.dataControl.getUserList(false)
         mAdapter.notifyDataSetChanged()
     }
 }

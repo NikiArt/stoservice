@@ -202,10 +202,24 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
 
-    fun getUserList() {
+    fun getUserList(excludeAdmin: Boolean = true) {
         val userList = Helpers.instance.userList
         userList.clear()
-        val cursor = App.instance().database.query(USERS_TABLE_NAME, null, null, null, null, null, null)
+        var req: String?
+        if (excludeAdmin) {
+            req = "$USER != '${findUserId("Администратор")}'"
+        } else {
+            req = null
+        }
+        val cursor = App.instance().database.query(
+            USERS_TABLE_NAME,
+            null,
+            if (excludeAdmin) "$USER != 'Администратор'" else null,
+            null,
+            null,
+            null,
+            null
+        )
         cursor?.moveToFirst()
         if (cursor != null && !cursor.isAfterLast) {
             do {
@@ -354,9 +368,14 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
         Toast.makeText(App.instance().baseContext, "Пользователь $user удален", Toast.LENGTH_LONG).show()
     }
 
-    fun getTotalAmount(user: String = "", startDate: Date? = null, done: Boolean = false): Double {
+    fun getTotalAmount(
+        user: String = "",
+        startDate: Date? = null,
+        endDate: Date? = null,
+        done: Boolean = false
+    ): Double {
         var totalAmount = 0.0
-        var req = makeRequirement(user, startDate)
+        var req = makeRequirement(user, startDate, endDate)
         if (done) {
             if (req != null && !req.isEmpty()) {
                 req += " AND "
@@ -381,9 +400,9 @@ class DatabaseControl(context: Context?, name: String?, factory: SQLiteDatabase.
     }
 
 
-    fun getTotalSalary(user: String = "", startDate: Date? = null): Double {
+    fun getTotalSalary(user: String = "", startDate: Date? = null, endDate: Date? = null): Double {
         var totalAmount = 0.0
-        val req = makeRequirement(user, startDate, Date())
+        val req = makeRequirement(user, startDate, endDate)
 
         val cursor =
             App.instance().database.query(PAY_TABLE_NAME, arrayOf("SUM(PRICE) AS amount"), req, null, null, null, null)

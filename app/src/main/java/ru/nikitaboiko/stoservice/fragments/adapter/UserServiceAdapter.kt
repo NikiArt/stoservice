@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.work_oreder_item.view.*
+import kotlinx.android.synthetic.main.work_order_item.view.*
 import ru.nikitaboiko.stoservice.R
 import ru.nikitaboiko.stoservice.structure.Helpers
 
@@ -22,7 +22,7 @@ class UserServiceAdapter : RecyclerView.Adapter<UserServiceAdapter.MyViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.work_oreder_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.work_order_item, parent, false)
         return MyViewHolder(view)
     }
 
