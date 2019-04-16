@@ -10,7 +10,7 @@ import ru.nikitaboiko.stoservice.fragments.UserRegDialog
 
 
 class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionListener,
-    UserListDialog.OnFragmentInteractionListener {
+    UserListDialog.OnFragmentInteractionListener, UserRegDialog.OnFragmentInteractionListener {
 
     override fun onFragmentInteraction(nextActivity: String, unit: String) {
         when (nextActivity) {
@@ -27,6 +27,11 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
                 intent.putExtra("user", unit)
                 startActivity(intent)
             }
+            "AdminPanel" -> {
+                val intent = Intent(this, AdminActivity::class.java)
+                intent.putExtra("user", unit)
+                startActivity(intent)
+            }
         }
     }
 
@@ -34,21 +39,45 @@ class MainActivity : AppCompatActivity(), UserLoginDialog.OnFragmentInteractionL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val userRegButton = findViewById<View>(R.id.activity_main_button_user_reg)
-        val addService = findViewById<View>(R.id.activity_main_button_add_service)
-        val serviceList = findViewById<View>(R.id.activity_main_button_services_list)
         val userList = findViewById<View>(R.id.activity_main_button_user_list)
-
-        userRegButton.setOnClickListener {
-            val manager = supportFragmentManager
-            val myDialogFragment = UserRegDialog()
-            myDialogFragment.show(manager, "dialog")
-        }
+        val records = findViewById<View>(R.id.activity_main_button_records)
+        val admin = findViewById<View>(R.id.activity_main_button_admin)
+        checkAdmin()
 
         userList.setOnClickListener {
             val manager = supportFragmentManager
             val myDialogFragment = UserListDialog()
             myDialogFragment.show(manager, "dialog")
+        }
+
+        records.setOnClickListener {
+            val intent = Intent(this, RecordOnRepair::class.java)
+            startActivity(intent)
+        }
+
+        admin.setOnClickListener {
+            if (checkAdmin()) {
+                val manager = supportFragmentManager
+                val myDialogFragment = UserLoginDialog()
+                val bundle = Bundle()
+                bundle.putString("user", "Администратор")
+                myDialogFragment.arguments = bundle
+                myDialogFragment.show(manager, "dialog")
+            }
+        }
+    }
+
+    private fun checkAdmin(): Boolean {
+        if (App.instance.dataControl.findUserId("Администратор") == null) {
+            val manager = supportFragmentManager
+            val myDialogFragment = UserRegDialog()
+            val bundle = Bundle()
+            bundle.putString("username", "Администратор")
+            myDialogFragment.arguments = bundle
+            myDialogFragment.show(manager, "dialog")
+            return false
+        } else {
+            return true
         }
     }
 }

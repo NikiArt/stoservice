@@ -9,9 +9,22 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-    >
+            android:theme="@style/AppTheme">
+        <activity android:name=".AdminOrdersList">
+        </activity>
+        <activity android:name=".AdminSalaryList">
+        </activity>
+        <activity android:name=".AdminUserList">
+        </activity>
+        <activity android:name=".AdminActivity">
+        </activity>
+        <activity android:name=".RecordOnRepair">
+        </activity>
         <activity android:name=".WorkerActivity">
+        </activity>
+        <activity android:name=".fragments.RecordAddDialog">
+        </activity>
+        <activity android:name=".fragments.SalaryAddDialog">
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>

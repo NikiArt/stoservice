@@ -6,13 +6,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import ru.nikitaboiko.stoservice.App
+import ru.nikitaboiko.stoservice.structure.Helpers
 
 
 class UserListDialog : DialogFragment() {
     private lateinit var listener: OnFragmentInteractionListener
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var users = App.instance().dataControl.getUserList().toTypedArray().sortedArray()
+        App.instance().dataControl.getUserList()
+        var users = Helpers.instance.userList.toTypedArray()
         val cont = context ?: return super.onCreateDialog(savedInstanceState)
 
         if (cont is OnFragmentInteractionListener) {

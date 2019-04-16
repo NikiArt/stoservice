@@ -1,10 +1,11 @@
 package ru.nikitaboiko.stoservice.structure
 
-import java.sql.Date
+import java.util.*
 
-class Registration(
+class Pay(
     val id: String,
-    val car: String,
+    val user: String,
     val date: Date,
+    val price: Double,
     val comment: String
 )

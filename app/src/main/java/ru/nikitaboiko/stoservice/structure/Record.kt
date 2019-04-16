@@ -2,12 +2,12 @@ package ru.nikitaboiko.stoservice.structure
 
 import java.util.*
 
-class Service(
+class Record(
     val id: String,
     val car: String,
-    val service: String,
-    val user: String,
-    val price: Double,
     val date: Date,
-    var done: Boolean = false
+    val client: String,
+    val telephone: String,
+    val user: String,
+    val comment: String
 )
