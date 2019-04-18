@@ -35,6 +35,7 @@
                 android:layout_width="37dp"
                 android:layout_height="37dp"
                 app:srcCompat="@android:drawable/ic_notification_clear_all"
+                android:tint="#FF8D5A"
                 android:background="#00FFFFFF"
                 android:id="@+id/activity_admin_orders_list_clear_selection"
                 android:layout_gravity="center"/>

@@ -89,7 +89,7 @@ class SalaryAddDialog : AppCompatActivity(), UserListDialog.OnFragmentInteractio
         amount.text.clear()
         var currentAmount =
             App.instance().dataControl.getTotalAmount(
-                user.text.toString()
+                user.text.toString(), null, null, true
             ) * 0.4
         currentAmount = Math.rint(100.0 * currentAmount) / 100.0
         var currentSalary =
