@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "649738007750",
+    "firebase_url": "https://stoservice-e1048.firebaseio.com",
+    "project_id": "stoservice-e1048",
+    "storage_bucket": "stoservice-e1048.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649738007750:android:551c4574b00ca7ad",
+        "android_client_info": {
+          "package_name": "ru.nikitaboiko.stoservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649738007750-64863nk4jji4cel3349e11buc9huvdde.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIk_74PP6WA3C0UtzZ_KNPGWRY-nR8-OY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649738007750-64863nk4jji4cel3349e11buc9huvdde.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
